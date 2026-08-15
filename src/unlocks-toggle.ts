@@ -30,6 +30,7 @@ import { getUnlocksFromURL, getUrlUnlockKind } from "./unlocks";
 import { getPillarFlagsFromURL } from "./pillars-unlocks";
 import { isLightMode } from "./light-mode";
 import { getCurrentIsDaily } from "./dynamic-map";
+import { isReconstructedTerrainEnabled } from "./terrain/backend-config";
 
 export type UnlockDescriptor = "all" | "none" | "mod";
 
@@ -212,6 +213,7 @@ async function ensureVariant(seed: number, isDaily: boolean, desc: UnlockDescrip
       // Pillars track real achievements, independent of the spell-unlock toggle.
       pillarFlags: getPillarFlagsFromURL(),
       parallelWorlds: isLightMode() ? [0] : undefined,
+      generateTerrainVerticalPlanes: isReconstructedTerrainEnabled(),
     });
     // Assign stable IDs based on coordinates and PW key
     const assignIds = (poiArr: any[], prefix: string) => {

@@ -21,7 +21,7 @@ export interface RawImageData {
  */
 export function decodePngToRgba(buf: ArrayBuffer): RawImageData {
   const decoded = decode(new Uint8Array(buf));
-  const { width, height, palette } = decoded;
+  const { width, height, palette, transparency } = decoded;
 
   // Handle Palette-indexed PNGs explicitly
   if (palette) {
@@ -61,18 +61,20 @@ export function decodePngToRgba(buf: ArrayBuffer): RawImageData {
     const base = i * channels;
     const rBase = i * 4;
 
+    const sample = (offset: number) => pixels[base + offset] ?? 0;
     const get = (offset: number) => {
-      const v = pixels[base + offset] ?? 0;
+      const v = sample(offset);
       return isU16 ? Math.round((v as number) / 257) : (v as number); // 65535→255
     };
 
     if (channels === 1) {
       // Grayscale
       const g = get(0);
-      rgba[rBase] = g;
-      rgba[rBase + 1] = g;
-      rgba[rBase + 2] = g;
-      rgba[rBase + 3] = 255;
+      const transparent = transparency?.length === 1 && sample(0) === transparency[0];
+      rgba[rBase] = transparent ? 0 : g;
+      rgba[rBase + 1] = transparent ? 0 : g;
+      rgba[rBase + 2] = transparent ? 0 : g;
+      rgba[rBase + 3] = transparent ? 0 : 255;
     } else if (channels === 2) {
       // Grayscale + Alpha
       const g = get(0);
@@ -81,11 +83,16 @@ export function decodePngToRgba(buf: ArrayBuffer): RawImageData {
       rgba[rBase + 2] = g;
       rgba[rBase + 3] = get(1);
     } else if (channels === 3) {
-      // RGB
-      rgba[rBase] = get(0);
-      rgba[rBase + 1] = get(1);
-      rgba[rBase + 2] = get(2);
-      rgba[rBase + 3] = 255;
+      // RGB PNGs can carry a tRNS color key. Most authored EdgeGraphics
+      // stamps use black as that transparent key instead of an alpha channel.
+      const transparent = transparency?.length === 3 &&
+        sample(0) === transparency[0] &&
+        sample(1) === transparency[1] &&
+        sample(2) === transparency[2];
+      rgba[rBase] = transparent ? 0 : get(0);
+      rgba[rBase + 1] = transparent ? 0 : get(1);
+      rgba[rBase + 2] = transparent ? 0 : get(2);
+      rgba[rBase + 3] = transparent ? 0 : 255;
     } else {
       // RGBA - must mirror Canvas premultiplied alpha: when alpha=0, RGB=0
       const a = get(3);

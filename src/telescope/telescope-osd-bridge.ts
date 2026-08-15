@@ -12,6 +12,15 @@ import { installTelescopeShim, isCanvasTainted } from "./telescope-dom-shim";
 import { installFetchInterceptor, installImageSrcInterceptor } from "./telescope-data-bridge";
 import { decodePngToRgba, rgbaToPngBlobUrl, rgbaToPngBlob } from "./png-decode";
 import { getCachedBiomeRender, cacheBiomeRender, getCachedSceneBitmap, cacheSceneBitmap, getCachedSceneBitmapKeys, getCachedSceneBitmapsBulk, getCachedBiomeRendersForKey } from "./tile-cache";
+import { loadNativeMaterialAssetsForLayers } from "../terrain/material-assets";
+import { compilePixelSceneStamp, type CompiledPixelSceneStamp } from "../terrain/pixel-scene-stamp";
+import { BIOME_SPAWN_FUNCTION_MAP } from "../../lib/noita-telescope/js/spawn_function_config.js";
+import { addReconstructedTerrainPlane } from "../terrain/reconstructed-terrain-osd";
+import {
+  isReconstructedTerrainEnabled,
+  isTerrainResolutionDiagnosticsEnabled,
+  terrainVisualCacheKey,
+} from "../terrain/backend-config";
 import i18next from "../i18n";
 import { attachAlwaysCastPopover, dismissPopovers } from "../popover-util";
 import {
@@ -70,6 +79,14 @@ import perkWiki from "../data/perk-wiki.json";
 // id -> { wikipage, image } from the noita.wiki.gg Perks cargo table
 // (baked by build_scripts/generate-perk-wiki.cjs).
 const PERK_WIKI: Record<string, { wikipage?: string; image?: string }> = perkWiki as any;
+
+// PixelScene_LoadTerrainStrips receives the global registered Wang callback
+// lookup, not only the center biome's table. Material identity still wins
+// before this set, matching processWangMaterialBuffer ordering.
+const PIXEL_SCENE_SPAWN_RGB = new Set<number>(
+  Object.values(BIOME_SPAWN_FUNCTION_MAP as Record<string, Array<{ color: number }>>)
+    .flatMap((definitions) => definitions.map((definition) => definition.color)),
+);
 
 /** Wiki image URL for a perk whose icon is missing from the local atlas. */
 function perkWikiImageUrl(perkId?: string): string | null {
@@ -1013,8 +1030,36 @@ async function addBiomeLayersProgressively(
   window.dispatchEvent(new CustomEvent("biomeGenerationProgress", { detail: { percentage: 0 } }));
   await ensureTelescopeModules();
 
-  const { tileLayers, biomeData, isNGP, worldCenter, parallelWorlds } = result;
+  const { tileLayers, terrainTileLayersByPlane, biomeData, isNGP, worldCenter, parallelWorlds } = result;
+  const reconstructedTerrainEnabled = isReconstructedTerrainEnabled();
+  const allTerrainTileLayers = terrainTileLayersByPlane
+    ? Array.from(new Set(Object.values(terrainTileLayersByPlane).flat()))
+    : tileLayers;
+  const pixelSceneWangRgb = reconstructedTerrainEnabled
+    ? collectPixelSceneWangRgb(result)
+    : new Set<number>();
+  const reconstructedAssets = reconstructedTerrainEnabled
+    ? await loadNativeMaterialAssetsForLayers(allTerrainTileLayers, pixelSceneWangRgb)
+    : null;
+  const reconstructedPixelScenes = reconstructedAssets
+    ? await compileGenerationPixelSceneStamps(result, reconstructedAssets.registry)
+    : new Map<string, CompiledPixelSceneStamp[]>();
+  if (reconstructedAssets) {
+    document.documentElement.dataset.reconstructedTerrainAssets = JSON.stringify(reconstructedAssets.report);
+    console.warn(
+      "[ReconstructedTerrain] Development backend enabled. Native type-2 Wang material selection, authored appearance, and the 512-cell interior EdgeGraphics pass are active. Native edge RNG phase and cross-chunk borders remain counted legacy-underlay fallback; other unresolved routes remain transparent and reported in coverage. Add terrainDiagnostics=1 for checkerboards.",
+      reconstructedAssets.report,
+    );
+  }
   const w = isNGP ? 72 : 70;
+  const reconstructedBiomeMapColorToName = reconstructedAssets
+    ? new Map<number, string>(
+        Object.entries(GENERATOR_CONFIG).map(([biomeName, config]: [string, any]) => [
+          config.color & 0xffffff,
+          biomeName,
+        ]),
+      )
+    : null;
   const pwOffsetPixels = w * 512;
   const pws = parallelWorlds || [-1, 0, 1];
 
@@ -1080,6 +1125,43 @@ async function addBiomeLayersProgressively(
       if (currentGenerationId !== generationId) return;
 
       const isFirstPw = pw === 0 && pvt === 0;
+
+      if (reconstructedAssets && reconstructedBiomeMapColorToName) {
+        const terrainTileLayers = terrainTileLayersByPlane?.[String(pvt)] ?? tileLayers;
+        const biomeMapPixels = pvt < 0
+          ? biomeData.heavenPixels
+          : pvt > 0
+            ? biomeData.hellPixels
+            : biomeData.pixels;
+        const showResolutionDiagnostics = isTerrainResolutionDiagnosticsEnabled();
+        const added = addReconstructedTerrainPlane({
+          viewer,
+          assets: reconstructedAssets,
+          tileLayers: terrainTileLayers,
+          worldSeed: result.seed,
+          worldCenter,
+          parallelWorld: pw,
+          verticalPlane: pvt,
+          worldWidthChunks: w,
+          cacheNamespace:
+            `${cacheKey ?? result.seed}|reconstructed|pw=${pw}|pvt=${pvt}|diag=${showResolutionDiagnostics ? 1 : 0}`,
+          showResolutionDiagnostics,
+          pixelSceneStamps: reconstructedPixelScenes.get(`${pw},0`) ?? [],
+          biomeMapPixels,
+          biomeMapColorToName: reconstructedBiomeMapColorToName,
+          isCurrentGeneration: () => currentGenerationId === generationId,
+          registerDynamicItem: (item) => dynamicTiledImages.add(item),
+        });
+        if (added && isFirstPw && onFirstPwReady) {
+          try {
+            onFirstPwReady();
+          } catch (error) {
+            console.warn("[OSD Bridge] onFirstPwReady threw:", error);
+          }
+        }
+        stepsDone++;
+        continue;
+      }
 
       // ── Cache fast path: blob already rendered for this (seed, pw, pvt) ──
       if (cacheKey) {
@@ -1749,7 +1831,15 @@ export const pixelSceneConfig = {
 (window as any).__pixelSceneConfig = pixelSceneConfig;
 
 /** Last loaded scene list for debug introspection */
-let _lastLoadedScenes: Array<{ name: string; key: string; x: number; y: number; category: string | null }> = [];
+let _lastLoadedScenes: Array<{
+  name: string;
+  key: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  category: string | null;
+}> = [];
 
 /** Debug panel (off by default, call window.__pixelSceneDebug() to open) */
 (window as any).__pixelSceneDebug = () => {
@@ -1789,7 +1879,7 @@ let _lastLoadedScenes: Array<{ name: string; key: string; x: number; y: number; 
 (window as any).__pixelSceneList = () => {
   if (_lastLoadedScenes.length === 0) {
     console.log("[Pixel Scenes] No scenes loaded yet. Generate a seed first.");
-    return;
+    return [];
   }
   const byCategory = new Map<string, typeof _lastLoadedScenes>();
   for (const s of _lastLoadedScenes) {
@@ -1810,6 +1900,7 @@ let _lastLoadedScenes: Array<{ name: string; key: string; x: number; y: number; 
     console.groupEnd();
   }
   console.groupEnd();
+  return _lastLoadedScenes.map((scene) => ({ ...scene }));
 };
 
 /** Toggle a scene name on/off in skipNames */
@@ -1862,6 +1953,133 @@ function getSceneCategory(scene: PixelScene): string | null {
   if (biome === "snowcastle_cavern" || biome === "sandcave") return "snowcastle";
 
   return "spawned"; // default for spawn-function-generated scenes
+}
+
+function isPixelSceneEnabledForRender(scene: PixelScene): boolean {
+  if (!pixelSceneConfig.enabled || !scene || scene.width <= 0 || scene.height <= 0) return false;
+  if (pixelSceneConfig.skipNames.has(scene.name)) return false;
+  const biome = scene.key.split("/")[0];
+  if (pixelSceneConfig.skipBiomes.has(biome)) return false;
+  const category = getSceneCategory(scene);
+  if (category && !pixelSceneConfig.categories[category]) return false;
+  if (pixelSceneConfig.skipFn && pixelSceneConfig.skipFn(scene)) return false;
+  return true;
+}
+
+function collectPixelSceneWangRgb(result: GenerationResult): Set<number> {
+  const colors = new Set<number>();
+  for (const scene of Object.values(result.pixelScenesByPW).flat()) {
+    if (!isPixelSceneEnabledForRender(scene)) continue;
+    const source = getPixelSceneImgElement(scene.key);
+    if (source) {
+      for (let offset = 0; offset + 3 < source.length; offset += 4) {
+        const red = source[offset];
+        const green = source[offset + 1];
+        const blue = source[offset + 2];
+        if ((red | green | blue) === 0 || (red === green && green === blue)) continue;
+        colors.add((red << 16) | (green << 8) | blue);
+      }
+    }
+    for (const part of (scene.variantKey ?? "").split("&")) {
+      const equal = part.indexOf("=");
+      if (equal <= 0 || part.startsWith("biome=")) continue;
+      const target = Number.parseInt(part.slice(equal + 1), 16);
+      if (Number.isFinite(target)) colors.add(target & 0xffffff);
+    }
+  }
+  return colors;
+}
+
+let _reconstructedStampedSceneKeys = new Set<string>();
+
+async function compileGenerationPixelSceneStamps(
+  result: GenerationResult,
+  registry: import("../terrain/material-appearance").NativeMaterialAppearanceRegistry,
+): Promise<Map<string, CompiledPixelSceneStamp[]>> {
+  const compiled = new Map<string, CompiledPixelSceneStamp[]>();
+  _reconstructedStampedSceneKeys = new Set<string>();
+  let missingMaterialImages = 0;
+  const missingMaterialImageKeys = new Set<string>();
+  const zip = await getDataZip();
+  const pngIndex = await getScenePngIndex();
+  const artworkByKey = new Map<string, {
+    background: { width: number; height: number; rgba: Uint8Array | Uint8ClampedArray } | null;
+    visual: { width: number; height: number; rgba: Uint8Array | Uint8ClampedArray } | null;
+  }>();
+  const templateByVariant = new Map<string, CompiledPixelSceneStamp>();
+  for (const [worldKey, scenes] of Object.entries(result.pixelScenesByPW)) {
+    const output: CompiledPixelSceneStamp[] = [];
+    for (const scene of scenes) {
+      if (!isPixelSceneEnabledForRender(scene)) continue;
+      const source = getPixelSceneImgElement(scene.key);
+      if (!source) {
+        missingMaterialImages += 1;
+        missingMaterialImageKeys.add(scene.key);
+        continue;
+      }
+      let artwork = artworkByKey.get(scene.key);
+      if (!artwork) {
+        const slash = scene.key.indexOf("/");
+        const biome = slash < 0 ? "" : scene.key.slice(0, slash);
+        const name = slash < 0 ? scene.key : scene.key.slice(slash + 1);
+        const skipBackground = biome === "temple" || biome === "general";
+        const backgroundPath = skipBackground
+          ? undefined
+          : resolveScenePath(pngIndex.bgByPath, pngIndex.bgByName, biome, name, scene.key);
+        const visualPath = resolveScenePath(pngIndex.visualByPath, pngIndex.visualByName, biome, name, scene.key);
+        const [backgroundImage, visualImage] = zip
+          ? await Promise.all([
+              backgroundPath ? decodeScenePng(zip, backgroundPath).catch(() => null) : Promise.resolve(null),
+              visualPath ? decodeScenePng(zip, visualPath).catch(() => null) : Promise.resolve(null),
+            ])
+          : [null, null];
+        artwork = {
+          background: backgroundImage ? {
+            width: backgroundImage.width,
+            height: backgroundImage.height,
+            rgba: backgroundImage.data,
+          } : null,
+          visual: visualImage ? {
+            width: visualImage.width,
+            height: visualImage.height,
+            rgba: visualImage.data,
+          } : null,
+        };
+        artworkByKey.set(scene.key, artwork);
+      }
+      const skipEdgeTextures = scene.skipEdgeTextures ?? scene.skip_edge_textures ?? false;
+      const templateKey = `${scene.key}|${scene.variantKey ?? ""}|edge=${skipEdgeTextures ? 0 : 1}`;
+      let template = templateByVariant.get(templateKey);
+      if (!template) {
+        template = compilePixelSceneStamp({
+          key: scene.key,
+          name: scene.name,
+          x: scene.x,
+          y: scene.y,
+          width: scene.width,
+          height: scene.height,
+          variantKey: scene.variantKey,
+          skipEdgeTextures,
+          rgba: source,
+          background: artwork.background,
+          visual: artwork.visual,
+        }, registry, (_biomeName, rgb) => PIXEL_SCENE_SPAWN_RGB.has(rgb));
+        templateByVariant.set(templateKey, template);
+      }
+      output.push({ ...template, x: scene.x, y: scene.y });
+      _reconstructedStampedSceneKeys.add(sceneRenderKey(scene));
+    }
+    compiled.set(worldKey, output);
+  }
+  const report = {
+    compiled: Array.from(compiled.values()).reduce((sum, entries) => sum + entries.length, 0),
+    compiledTemplates: templateByVariant.size,
+    missingMaterialImages,
+    missingMaterialImageKeys: Array.from(missingMaterialImageKeys).sort(),
+  };
+  document.documentElement.dataset.reconstructedPixelScenes = JSON.stringify(report);
+  console.warn("[ReconstructedTerrain] PixelScene terrain stamps", report);
+  return compiled;
 }
 
 /**
@@ -2129,9 +2347,13 @@ async function loadVisualPngBitmap(sceneKey: string): Promise<ImageBitmap | null
  */
 function sceneRenderKey(scene: { key: string; variantKey?: string }): string {
   const vk = scene.variantKey || "";
-  if (!vk) return scene.key;
-  const mat = vk.split("&").filter((p) => p && !p.startsWith("biome="));
-  return mat.length ? `${scene.key}|${mat.join("&")}` : scene.key;
+  const materialVariants = vk
+    .split("&")
+    .filter((part) => part && !part.startsWith("biome="));
+  const base = materialVariants.length
+    ? `${scene.key}|${materialVariants.join("&")}`
+    : scene.key;
+  return terrainVisualCacheKey(base);
 }
 
 /**
@@ -2188,11 +2410,16 @@ async function compositeSceneBitmap(
 
   const override = pixelSceneConfig.layerOverrides[name] || pixelSceneConfig.layerOverrides[key];
   const wantBg = override?.background ?? pixelSceneConfig.layers.background;
-  const wantMid = override?.mid ?? pixelSceneConfig.layers.mid;
-  const wantVis = override?.visual ?? pixelSceneConfig.layers.visual;
+  // Reconstructed terrain owns the material-image layer. Drawing Telescope's
+  // legacy flat recolor again would recreate the rectangular artifacts and
+  // cover the cell-accurate stamp beneath it.
+  const reconstructedTerrain = isReconstructedTerrainEnabled();
+  const terrainOwned = reconstructedTerrain && _reconstructedStampedSceneKeys.has(sceneRenderKey(scene));
+  const wantMid = !terrainOwned && (override?.mid ?? pixelSceneConfig.layers.mid);
+  const wantVis = !terrainOwned && (override?.visual ?? pixelSceneConfig.layers.visual);
 
   const visualPath = wantVis ? resolveScenePath(idx.visualByPath, idx.visualByName, biome, name, key) : undefined;
-  const bgPath = skipBg || !wantBg ? undefined : resolveScenePath(idx.bgByPath, idx.bgByName, biome, name, key);
+  const bgPath = skipBg || !wantBg || terrainOwned ? undefined : resolveScenePath(idx.bgByPath, idx.bgByName, biome, name, key);
 
   const zip = await getDataZip();
   let bgData: ImageData | null = null;
@@ -2314,6 +2541,9 @@ let _scenePrefetchInflight: Promise<void> | null = null;
  * pixel-scene compositing work.
  */
 export function prefetchAllSceneBitmaps(): Promise<void> {
+  if (isReconstructedTerrainEnabled()) {
+    return Promise.resolve();
+  }
   if (_scenePrefetchInflight) return _scenePrefetchInflight;
   _scenePrefetchInflight = (async () => {
     try {
@@ -2396,16 +2626,7 @@ async function buildSceneBitmaps(
   generationId: number | null,
 ): Promise<{ validScenes: PixelScene[]; bitmapByKey: Map<string, ImageBitmap> } | null> {
   const allScenes = Object.values(result.pixelScenesByPW).flat();
-  const validScenes = allScenes.filter((s) => {
-    if (!s || s.width <= 0 || s.height <= 0) return false;
-    if (pixelSceneConfig.skipNames.has(s.name)) return false;
-    const biome = s.key.split("/")[0];
-    if (pixelSceneConfig.skipBiomes.has(biome)) return false;
-    const category = getSceneCategory(s);
-    if (category && !pixelSceneConfig.categories[category]) return false;
-    if (pixelSceneConfig.skipFn && pixelSceneConfig.skipFn(s)) return false;
-    return true;
-  });
+  const validScenes = allScenes.filter(isPixelSceneEnabledForRender);
   const bitmapByKey = new Map<string, ImageBitmap>();
   if (validScenes.length === 0) return { validScenes, bitmapByKey };
 
@@ -2501,8 +2722,11 @@ export async function addPixelScenes(viewer: OSDViewer, result: GenerationResult
     key: s.key,
     x: s.x,
     y: s.y,
+    width: s.width,
+    height: s.height,
     category: getSceneCategory(s),
   }));
+  document.documentElement.dataset.pixelSceneInventory = JSON.stringify(_lastLoadedScenes);
 
   console.log(
     `[OSD Bridge] Pixel scenes: ${allScenes.length} total, ${validScenes.length} valid`,

@@ -52,6 +52,8 @@ interface CachedGeneration {
   worldCenter: number;
   parallelWorlds: number[];
   tileLayers: CachedTileLayer[];
+  terrainLayerSchema?: number;
+  terrainTileLayersByPlane?: Record<string, CachedTileLayer[]>;
   biomeDataPixels: ArrayBuffer;
   biomeDataW: number;
   biomeDataH: number;
@@ -69,6 +71,41 @@ interface CachedGeneration {
       imgData: ArrayBuffer | null;
     }>
   >;
+}
+
+function serializeTileLayer(layer: any): CachedTileLayer {
+  return {
+    biomeName: layer.biomeName || "",
+    correctedX: layer.correctedX,
+    correctedY: layer.correctedY,
+    w: layer.w,
+    h: layer.h,
+    buffer: layer.buffer
+      ? layer.buffer.buffer.slice(layer.buffer.byteOffset, layer.buffer.byteOffset + layer.buffer.byteLength)
+      : null,
+    width: layer.width,
+    height: layer.height,
+    mapH: layer.mapH,
+    minX: layer.minX,
+    minY: layer.minY,
+  };
+}
+
+function hydrateTileLayer(layer: CachedTileLayer): any {
+  return {
+    biomeName: layer.biomeName,
+    canvas: null,
+    correctedX: layer.correctedX,
+    correctedY: layer.correctedY,
+    w: layer.w,
+    h: layer.h,
+    buffer: layer.buffer ? new Uint8Array(layer.buffer) : null,
+    width: layer.width,
+    height: layer.height,
+    mapH: layer.mapH,
+    minX: layer.minX,
+    minY: layer.minY,
+  };
 }
 
 function openDB(): Promise<IDBDatabase> {
@@ -125,21 +162,14 @@ export async function cacheGeneration(cacheKey: string, seed: number, result: an
     const db = await openDB();
 
     // Serialize tile layer raw buffers (no canvas blobs)
-    const tileLayers: CachedTileLayer[] = result.tileLayers.map((layer: any) => ({
-      biomeName: layer.biomeName || "",
-      correctedX: layer.correctedX,
-      correctedY: layer.correctedY,
-      w: layer.w,
-      h: layer.h,
-      buffer: layer.buffer
-        ? layer.buffer.buffer.slice(layer.buffer.byteOffset, layer.buffer.byteOffset + layer.buffer.byteLength)
-        : null,
-      width: layer.width,
-      height: layer.height,
-      mapH: layer.mapH,
-      minX: layer.minX,
-      minY: layer.minY,
-    }));
+    const tileLayers: CachedTileLayer[] = result.tileLayers.map(serializeTileLayer);
+    const terrainTileLayersByPlane = result.terrainTileLayersByPlane
+      ? Object.fromEntries(
+          Object.entries(result.terrainTileLayersByPlane)
+            .filter(([plane]) => plane !== "0")
+            .map(([plane, layers]) => [plane, (layers as any[]).map(serializeTileLayer)]),
+        )
+      : undefined;
 
     // Store pixel scene metadata only. We deliberately do NOT serialise
     // imgElement/imgData anymore — those bytes are duplicated:
@@ -173,6 +203,8 @@ export async function cacheGeneration(cacheKey: string, seed: number, result: an
       worldCenter: result.worldCenter,
       parallelWorlds: result.parallelWorlds || [-1, 0, 1],
       tileLayers,
+      terrainLayerSchema: terrainTileLayersByPlane ? 1 : undefined,
+      terrainTileLayersByPlane,
       biomeDataPixels: result.biomeData?.pixels
         ? new Uint32Array(result.biomeData.pixels).buffer
         : new ArrayBuffer(0),
@@ -214,26 +246,28 @@ export async function getCachedGeneration(cacheKey: string): Promise<any | null>
     db.close();
 
     if (!entry) return null;
+    if (cacheKey.includes("|terrain-reconstructed-v") && entry.terrainLayerSchema !== 1) {
+      console.warn(`[TileCache] Rejecting reconstructed cache entry without terrain plane schema: ${cacheKey}`);
+      return null;
+    }
     if (Date.now() - entry.timestamp > MAX_AGE_MS) {
       pruneOldEntries().catch(() => {});
       return null;
     }
 
     // Restore tile layers with raw buffers (no canvas — overlays recomputed)
-    const tileLayers = entry.tileLayers.map((layer) => ({
-      biomeName: layer.biomeName,
-      canvas: null,
-      correctedX: layer.correctedX,
-      correctedY: layer.correctedY,
-      w: layer.w,
-      h: layer.h,
-      buffer: layer.buffer ? new Uint8Array(layer.buffer) : null,
-      width: layer.width,
-      height: layer.height,
-      mapH: layer.mapH,
-      minX: layer.minX,
-      minY: layer.minY,
-    }));
+    const tileLayers = entry.tileLayers.map(hydrateTileLayer);
+    const terrainTileLayersByPlane = entry.terrainTileLayersByPlane
+      ? {
+          "0": tileLayers,
+          ...Object.fromEntries(
+            Object.entries(entry.terrainTileLayersByPlane).map(([plane, layers]) => [
+              plane,
+              layers.map(hydrateTileLayer),
+            ]),
+          ),
+        }
+      : undefined;
 
     // Reconstruct biomeData with pixels, heavenPixels, and hellPixels
     let biomeData: any = { pixels: new Uint32Array(0), w: 0, h: 0 };
@@ -280,6 +314,7 @@ export async function getCachedGeneration(cacheKey: string): Promise<any | null>
       parallelWorlds: entry.parallelWorlds,
       biomeData,
       tileLayers,
+      terrainTileLayersByPlane,
       poisByPW: entry.poisByPW,
       pixelScenesByPW,
     };
@@ -526,4 +561,3 @@ export async function cacheSceneBitmap(key: string, blob: Blob, width: number, h
     console.warn("[TileCache] Failed to cache scene bitmap:", e);
   }
 }
-

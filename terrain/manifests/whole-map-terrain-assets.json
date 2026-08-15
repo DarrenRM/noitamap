@@ -1,0 +1,2569 @@
+{
+  "schemaVersion": 2,
+  "purpose": "Declared terrain-generation, generated grass-overlay, PixelScene material-stamping, and material-appearance content closure for the current whole-map routes.",
+  "scope": {
+    "wangSmoothingTypes": [
+      0,
+      1,
+      2
+    ],
+    "note": "Package inclusion is closed; native smoothing types 1 and 2 and generalized type-0 surface generation remain implementation blockers."
+  },
+  "inputs": {
+    "wangArchive": {
+      "path": "public/wang_tiles.zip",
+      "bytes": 858452,
+      "sha256": "1D844F87F04106B44E4DC2B189CD1AD82C9B450E5C55A996CD65A32193AC185A"
+    },
+    "dataArchive": {
+      "path": "public/data.zip",
+      "bytes": 24842915,
+      "sha256": "C8254BB8D8DBC892C49A3DC38C80992E86CE0FBD3EF476B69C0AB85A5AD2CDF9"
+    },
+    "pixelSceneArchive": {
+      "path": "public/pixel_scenes.zip",
+      "bytes": 3092626,
+      "sha256": "765F27BB3B8EE2B96912E1E2120D66E0593855E5473A0440203230A52E9FC9E1"
+    },
+    "materials": {
+      "path": "public/assets/full_materials.json",
+      "bytes": 2137455,
+      "sha256": "F1AFD46F20B6871BDFFF3BF5B3C751ED9271F12FC7A0E2DED4297A3FCF3CAE91"
+    }
+  },
+  "totals": {
+    "biomeRoutes": 39,
+    "wangSheets": 30,
+    "biomeConfigurations": 39,
+    "materials": 146,
+    "textures": 82,
+    "pixelSceneMaterialImages": 295,
+    "missingPixelSceneMaterialImages": 31,
+    "pixelSceneDirectWangRgb": 541,
+    "pixelSceneVariantMaterials": 30,
+    "directEdgeGraphicsRecords": 63,
+    "directEdgeGraphicsImages": 267,
+    "edgeGraphicsAssets": 118,
+    "entries": 276,
+    "uncompressedBytes": 2354245
+  },
+  "entries": [
+    {
+      "path": "data/biome_impl/biome_map_background.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome_impl/biome_map_background.png",
+      "purpose": "seeded-biome-generation",
+      "authored": true,
+      "bytes": 2262,
+      "sha256": "6511E14CC43CC1C4D38D3BE9E3F83E9674EFDC7F7A74E989DAA7DA49F4227121"
+    },
+    {
+      "path": "data/biome_impl/biome_map_foreground.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome_impl/biome_map_foreground.png",
+      "purpose": "seeded-biome-generation",
+      "authored": true,
+      "bytes": 2154,
+      "sha256": "3206EAF0643BF4297AFEA7FA0B22B47D6D02E08D5C95CD0E91D4F81D1FBF49FE"
+    },
+    {
+      "path": "data/biome_impl/biome_map_newgame_plus.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome_impl/biome_map_newgame_plus.png",
+      "purpose": "seeded-biome-generation",
+      "authored": true,
+      "bytes": 17505,
+      "sha256": "3D91374940B213BAEDC109805416FDD8677E5B248F44FB1AAF9C7C8AA86C9D55"
+    },
+    {
+      "path": "data/biome_impl/biome_map.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome_impl/biome_map.png",
+      "purpose": "seeded-biome-generation",
+      "authored": true,
+      "bytes": 17612,
+      "sha256": "E3505ADC86A09CC5E5415E511B38F02D8ADFFD6BFC6932D9F8A9F4A26D29DD50"
+    },
+    {
+      "path": "data/biome_impl/static_tile/biome_barren.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome_impl/static_tile/biome_barren.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 6235,
+      "sha256": "58F9528E3B1AED51BE99219C0582DB6358198EC559B578A884BE6E8A5CD956DA"
+    },
+    {
+      "path": "data/biome_impl/static_tile/biome_boss_sky.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome_impl/static_tile/biome_boss_sky.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 5534,
+      "sha256": "24F2B6CA15CC09151DD07A8B7BB247871351FCED909B3CDB8CB636AF500451EB"
+    },
+    {
+      "path": "data/biome_impl/static_tile/biome_darkness.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome_impl/static_tile/biome_darkness.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 5584,
+      "sha256": "BF8F58DA45486AF217AB18E7D99F8789FA9F19A7EF8CCD77A22BCDDC6C21C98E"
+    },
+    {
+      "path": "data/biome_impl/static_tile/biome_potion_mimics.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome_impl/static_tile/biome_potion_mimics.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 6187,
+      "sha256": "5073FB3D82E7D73F614459F280A86C482B178619B68481A59CCF5E911C1A311A"
+    },
+    {
+      "path": "data/biome_impl/static_tile/biome_watchtower.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome_impl/static_tile/biome_watchtower.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 6218,
+      "sha256": "6866824B3C4D3958CFD53C5142EC73ABC1B354EF92643D5EA270EE9C816DEDA6"
+    },
+    {
+      "path": "data/biome/clouds.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/clouds.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 2361,
+      "sha256": "FD236B6FEBC588053AA22EA3100DDAA89E151C5C606D0A0FCBC73C13E8907360"
+    },
+    {
+      "path": "data/biome/coalmine_alt.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/coalmine_alt.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 10466,
+      "sha256": "C200BA1D8BB1D9C5DD35F5066F5015AFA110866379BE374E950DDC5A3B921A76"
+    },
+    {
+      "path": "data/biome/coalmine.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/coalmine.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 10680,
+      "sha256": "FBCD698D599EF2E8DAA27F52F7E186901508C218751A4BDDA4828E50BB53FFAC"
+    },
+    {
+      "path": "data/biome/crypt.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/crypt.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 6781,
+      "sha256": "56A4C842A084925DF38C417C3FC31A4883D5DBA6B39E30E84754E6FE2DF5B8CC"
+    },
+    {
+      "path": "data/biome/excavationsite.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/excavationsite.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 10357,
+      "sha256": "F02DC08AAFB5FE36E9AB59F652D888143891C3C242BB2A8A92DF6F02AA1F7291"
+    },
+    {
+      "path": "data/biome/fungicave.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/fungicave.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 6097,
+      "sha256": "8D6286C4050CC5685A38790D9C2446B60BE92555B40CEC394D22ECF583510C08"
+    },
+    {
+      "path": "data/biome/fungiforest.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/fungiforest.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 4475,
+      "sha256": "045F016528CD3E367AB44870ED8F7E60A212FDDF0F1E38D76F1A68560ECEEDD9"
+    },
+    {
+      "path": "data/biome/lake_deep.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/lake_deep.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 1534,
+      "sha256": "B670A8872BCB937732D0FEF1C498397B42B7FB51EEEEAA207B64B1BAC2450026"
+    },
+    {
+      "path": "data/biome/liquidcave.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/liquidcave.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 7268,
+      "sha256": "FF1847718A5CF4D8BAD900144DF4C1219BDD9EE1B9FBC256E8703EB329421264"
+    },
+    {
+      "path": "data/biome/meat.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/meat.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 2512,
+      "sha256": "3832D57F6301CA95B4BE3120C7C2CB621A53DB7C3A6D112DD455DC3D825FE722"
+    },
+    {
+      "path": "data/biome/pyramid.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/pyramid.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 5292,
+      "sha256": "57A29652110D1719168D1C2599DECD93441A595D7705985C1DA1ABEA5E13FDDB"
+    },
+    {
+      "path": "data/biome/rainforest_dark.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/rainforest_dark.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 6923,
+      "sha256": "18FFD72EA39EFF0556D3A893036F8EC5C10B2188ED1BB25FA279922A5A6435E6"
+    },
+    {
+      "path": "data/biome/rainforest_open.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/rainforest_open.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 10952,
+      "sha256": "20019ED514DF89C617EBCAA6A89F773444D8DFA20BD9E10CF90A8714E43A98B7"
+    },
+    {
+      "path": "data/biome/rainforest.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/rainforest.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 12109,
+      "sha256": "7B20309ACDC2BAEBB8EEB1F6AB4EF148C364FD47BADFD4CCC0385C3B5C01463B"
+    },
+    {
+      "path": "data/biome/robobase.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/robobase.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 7135,
+      "sha256": "CB745F0074499208C3EB378E9E4FF0B44640526961F1CA6BAB7F3B0E25ACEE65"
+    },
+    {
+      "path": "data/biome/sandcave.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/sandcave.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 5887,
+      "sha256": "35DD3243B0F3B31E1113805153C057B0F127467E11C2304180A64677B1831C53"
+    },
+    {
+      "path": "data/biome/snowcastle.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/snowcastle.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 3708,
+      "sha256": "D5DA15238A33E7B19D4AAE284C58D051CB60D44EC92C96C1E69B6C20C391CC14"
+    },
+    {
+      "path": "data/biome/snowcave.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/snowcave.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 3683,
+      "sha256": "53212133678CA99114451820ADE5C8CD9F0229BF5BA3AF98AE3059296C88FCFD"
+    },
+    {
+      "path": "data/biome/the_end.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/the_end.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 4383,
+      "sha256": "6B8FA3C39D2C349F4D4CB79050CDCA92E65A88550C81A04B2F6A58A9C5668596"
+    },
+    {
+      "path": "data/biome/the_sky.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/the_sky.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 3538,
+      "sha256": "7E727A58159D565A4CAD8579824F064C7B3278D0517F1279DB66871EC2D4F1ED"
+    },
+    {
+      "path": "data/biome/tower/solid_wall_tower_1.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/tower/solid_wall_tower_1.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 10482,
+      "sha256": "4CD5BE78BB2E7E97655519ECC7BBC585E043DF7CF0C39E7192CE17B669610AB3"
+    },
+    {
+      "path": "data/biome/tower/solid_wall_tower_2.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/tower/solid_wall_tower_2.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 9109,
+      "sha256": "AE690D01A78123DFD24989040405CAD4EBECC9150A2A0A78B56F4FC38335202D"
+    },
+    {
+      "path": "data/biome/tower/solid_wall_tower_3.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/tower/solid_wall_tower_3.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 2918,
+      "sha256": "919708B11180D93BC06807DF5790E480AE96630275C199977BB1A6BD5A57BAF3"
+    },
+    {
+      "path": "data/biome/tower/solid_wall_tower_4.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/tower/solid_wall_tower_4.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 2936,
+      "sha256": "00928A4D97A17074681FC101CB227E8C85E77611AF936B02F586F0E0B0EAF7BA"
+    },
+    {
+      "path": "data/biome/tower/solid_wall_tower_5.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/tower/solid_wall_tower_5.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 6031,
+      "sha256": "237EE84E73B1929FDE1BAB1C65E0A526B03B33DBF3EC24F8231F79D8E800101A"
+    },
+    {
+      "path": "data/biome/tower/solid_wall_tower_6.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/tower/solid_wall_tower_6.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 11871,
+      "sha256": "712DA0044979BF078920E50ED70ECE225956688478FF713644A88612EF0D7D33"
+    },
+    {
+      "path": "data/biome/tower/solid_wall_tower_7.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/tower/solid_wall_tower_7.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 6325,
+      "sha256": "21AF3B2E113E52D655455F9AB7F3923E022D3FD33F854708E69CABC1254EB4AD"
+    },
+    {
+      "path": "data/biome/tower/solid_wall_tower_8.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/tower/solid_wall_tower_8.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 5321,
+      "sha256": "EFB2E06372B1F3A11A9606DBC29C646040885924A397996D8D3EE2C6AB037F3A"
+    },
+    {
+      "path": "data/biome/tower/solid_wall_tower_9.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/tower/solid_wall_tower_9.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 4362,
+      "sha256": "0480D9FE2F3128B0B2489B79D61DF0C3639B92C40018E6AC40FAB17B1ABBFDB2"
+    },
+    {
+      "path": "data/biome/vault_frozen.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/vault_frozen.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 3793,
+      "sha256": "6FC4B9DF2A63521CC59BE487BE3C050C15878E5CD8BA47740FA75538D01F6DF0"
+    },
+    {
+      "path": "data/biome/vault.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/vault.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 7102,
+      "sha256": "FF3475508124A3F647F32A04629FF22D9913192E3479B6A5B6CABF364C74307E"
+    },
+    {
+      "path": "data/biome/wandcave.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/wandcave.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 5472,
+      "sha256": "A90F01E99C1C34962632F07A8AE4324B390EC37453089EB4AE1F575D88849908"
+    },
+    {
+      "path": "data/biome/winter_caves.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/winter_caves.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 9566,
+      "sha256": "732BF3A10D99025D42C098ED0CC7D9B1F994F4EACBE74D2C8734B6E61965A040"
+    },
+    {
+      "path": "data/biome/wizardcave.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/biome/wizardcave.xml",
+      "purpose": "biome-material-selection",
+      "authored": true,
+      "bytes": 6260,
+      "sha256": "AE2C21CCB9CCEC2EDC003E820BEF7221249910B9C09C0939E5D26F5FFE59AA41"
+    },
+    {
+      "path": "data/materials_gfx/blueblood.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/blueblood.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 351,
+      "sha256": "13C4EEEEBCB71DFC941D1C85B63E6258C184E35C1E47345FE148C4A6396F61A8"
+    },
+    {
+      "path": "data/materials_gfx/bluefungi.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/bluefungi.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 346,
+      "sha256": "F78F85BB4A5C1C6E8BB2CF04C056A4851C7EAC89B741E34B81740F3594BB6BF8"
+    },
+    {
+      "path": "data/materials_gfx/bone.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/bone.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 832,
+      "sha256": "49497C55D0F913D680286817EC1C35262B3E277F9468B3802CEDD8908B3C6BE7"
+    },
+    {
+      "path": "data/materials_gfx/brass.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/brass.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1527,
+      "sha256": "0B536BA16C04BC01204DFB05CF13CC8FC57784390BEADB29D1D3013D6A73F3BF"
+    },
+    {
+      "path": "data/materials_gfx/coal_static.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/coal_static.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 59439,
+      "sha256": "27D084D7F88EE904643A96DADC7206AD2ECE7998C2F6C6770D61FC1D5F18168E"
+    },
+    {
+      "path": "data/materials_gfx/coal.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/coal.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 969,
+      "sha256": "DDAF72E522B7DEF8E9DB15E394677D932497302792F92EFC92B5D78BD6825DB5"
+    },
+    {
+      "path": "data/materials_gfx/concrete_wet.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/concrete_wet.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 497,
+      "sha256": "F5C01B5770FB6200AC8C8EA1C763FE9CC7BEFA40655E4F2B1670CC92DC6993DE"
+    },
+    {
+      "path": "data/materials_gfx/confusion.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/confusion.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 201,
+      "sha256": "DADE27B3BE9661C501D7338792D2327F0EA4588365FD8B8D53912F53394E440E"
+    },
+    {
+      "path": "data/materials_gfx/copper.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/copper.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 187,
+      "sha256": "F4F30A3A6792209EDB02436AB923E78D69F4E6151D7CDE2E604027D3629540BC"
+    },
+    {
+      "path": "data/materials_gfx/darkness.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/darkness.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 17104,
+      "sha256": "F53DFCB0D766E982C4D659182AD1C5C06677BEED6C4856A62A452D1E6F01521B"
+    },
+    {
+      "path": "data/materials_gfx/desert_surface.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/desert_surface.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 20579,
+      "sha256": "3A32B9998EB88DBF57D7680B05F050C04C8B85C893499F351FAA65B7B67FB0BC"
+    },
+    {
+      "path": "data/materials_gfx/desert.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/desert.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 19589,
+      "sha256": "552764BCED291F3F389065712CA7EFBDCF48EB713B5E72B28F8D0ECF07031EA6"
+    },
+    {
+      "path": "data/materials_gfx/diamond.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/diamond.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 587,
+      "sha256": "09A5A4358A92020FA6D9449D6440C9D3C5F8381A888E0116A94A936A7034016D"
+    },
+    {
+      "path": "data/materials_gfx/earth_bright_red.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/earth_bright_red.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 577,
+      "sha256": "52A841EA7CB73B14513CAAE1EA18BB03357706E391435B40A0192D6C2E238F4A"
+    },
+    {
+      "path": "data/materials_gfx/earth_rainforest_dark.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/earth_rainforest_dark.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 2900,
+      "sha256": "183CA04B96E264954C9A14D3D286311A6F14D40431B20D8325DCBB064D721973"
+    },
+    {
+      "path": "data/materials_gfx/earth_rainforest.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/earth_rainforest.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 3135,
+      "sha256": "127639291BD5E1444BE7788F5B02D8871DFC2FACDEC93153F558AED36DCE8B49"
+    },
+    {
+      "path": "data/materials_gfx/earth.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/earth.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 604,
+      "sha256": "22D0EC83C6EA7D12778284F90413B8EDC0ABBF07FBA623CB38FBA55796DB79AD"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_coal_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_coal_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 356,
+      "sha256": "C9EC4C1808236F998A61647184DEFCE89C35BFC6535D478DDEFF863F58439B98"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_coal_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_coal_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 373,
+      "sha256": "9C690D6542A605935AC4E192F693847E5C2279D316A561D11A303A5D39DDEDE2"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_earth_fun_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_earth_fun_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 759,
+      "sha256": "730D6599D616B442F96810B5371D2AC0B2982E69857DD6F3CDDE77171253D4C8"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_earth_fun_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_earth_fun_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 248,
+      "sha256": "0F847CC0F2ABAFB88BF7AF9EA2E0BCC14F6FACE5DD0FA9366BCF60C881630C8D"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_earth_rainforest_dark_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_earth_rainforest_dark_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 747,
+      "sha256": "075F577F7672BFA8806B6DD3B2E780C61874B36ED75A6C0C9A63847FF16801B6"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_earth_rainforest_dark_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_earth_rainforest_dark_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 252,
+      "sha256": "A144C4B959F60BAE8180207B54AC56F942940BDAFC954AF343974EEDE1BD1F36"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_earth_rainforest_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_earth_rainforest_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 776,
+      "sha256": "E331E5018B7253173D27D386DDF5720E07885BFC65C24D3617486CA2500CAD14"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_earth_rainforest_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_earth_rainforest_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 271,
+      "sha256": "AEEA998061A36851A23103FF34A5470767BE3DADD3D30A89F925D788FB824026"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_end_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_end_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 179,
+      "sha256": "64E2674F5D416A8F3E5B7EB74D071147453B2D64DE3D2DC4DC085DFD72258FE8"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_end_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_end_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 205,
+      "sha256": "036B7BADFFC38786E379F0E8828D526D997FE22A0F572AD15F52D98ECE00D647"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_endslime_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_endslime_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 215,
+      "sha256": "05A05C1DEA0A79125D312ACD1B719A7345B2FD39DF8BDAC3081338462D2F53FB"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_endslime_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_endslime_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 179,
+      "sha256": "AD8333B9B3282F5DC203212EB7B32ADBAACD51134D9C4B099DBFF4958845647C"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_grey_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_grey_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 332,
+      "sha256": "7F11714E15F57BD675D0C1F69B514C5176F145FB14B8BEFF4F8E5993139AD52C"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_grey_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_grey_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 357,
+      "sha256": "CBBA26F364FDC5BCFC31B9DEC916EDBA54BF4653E503A1AFD9CC54E70BFB7F23"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_grey_3.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_grey_3.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 298,
+      "sha256": "C94183EE0C1EE354A71A893B8BCB7EF24AD77BF55A296EB40B1406230AAB1910"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_grey_4.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_grey_4.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 336,
+      "sha256": "22809CCFD7715D6C061F6F6C92F9DF8E2FE2A811DDBD0BF1BB13273820AA0AE1"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_grey_5.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_grey_5.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 338,
+      "sha256": "AFCE96027BEEAEFD7B728C6405B6ECDD627FB0A6226AC7A3971A58B504016F0B"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_grey_6.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_grey_6.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 350,
+      "sha256": "A20F591DA1811361EFA4B9F146AEB789BFF0095DE0C58E55D0F2156D4F352AD8"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_ice.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_ice.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 119,
+      "sha256": "05E226CA2B6864150756E9938D15C6E5C405FCFECD5DA426F7B941803785C6C0"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_meat_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_meat_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 759,
+      "sha256": "50A88A5D52847F7393953397A79805A118CC3CE31D1FC216E14B42BE88DAA03A"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_meat_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_meat_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 240,
+      "sha256": "9869F06E2C53D6BF2BFF7B2202E146E70C9B9E6ADDC36FFDF42FCDCE7F7C2788"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_poison_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_poison_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 332,
+      "sha256": "82FE4AC87C027004F4B9FE94213B05118F81DEB11375F432B99C83ECDB3A231A"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_poison_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_poison_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 303,
+      "sha256": "419FF8043993B1DC5D02CF8CFF1772DD530F75C9935BA37441CA713CC1DBE5C3"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_poison_3.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_poison_3.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 309,
+      "sha256": "F0F3D74CC6E306B963C7BEFE5D0D80C01A091B8FEBAFC44261E28036734B2B94"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_poison_4.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_poison_4.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 303,
+      "sha256": "811BA27245785506DB3996EA5F7595D4C7C4D906D1C3C616AB6B00F98D537D55"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_poison_5.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_poison_5.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 315,
+      "sha256": "2964C47B2C2356E5F1B2BAFF81E3A9A277BAF2424DD8340EF31C08E417C6C89B"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_poison_6.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_poison_6.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 323,
+      "sha256": "9D7D1AAD8033FA672016006215EDA848C94053FE41F8A6C124D2BD3EE78790A4"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_radio_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_radio_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 311,
+      "sha256": "DB6218E9671BF17C8E1A2F5CDDD79C04827FA18A6236F0F9B8A6EA80355D164F"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_radio_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_radio_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 303,
+      "sha256": "B9B08A2AB3C457A82D9F7FE9EF17540F08F980447648C8E2574F2DAA85109CB6"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_radio_3.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_radio_3.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 299,
+      "sha256": "27D70DA62B8FE531A5E3C9E15F3DE640F7136B691D8A97597581415666C2BC35"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_radio_4.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_radio_4.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 312,
+      "sha256": "AC8A16B5DBDECFC22880599C64A0D5D47234B602880B5B70DC3CC16DB714DF4E"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_radio_5.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_radio_5.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 309,
+      "sha256": "CD47773AE5FE20C13DA25E03224317E0D342932644B5BE3837E91C5A20EA0662"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_radio_6.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_radio_6.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 322,
+      "sha256": "9242484430E06E16198C56D8EB7C2DD35A51347C785C4E18FE84A33DD8996C32"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_red_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_red_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 341,
+      "sha256": "E81C3A9D015C5E6415E1767A1EBF3379B5A90B8209FBCBC3CEF3367F2119C18D"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_red_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_red_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 319,
+      "sha256": "5BDB04B4D3A6C4F4EDFC876A28547BBF11F599D9F2738A457B0341C1685137C3"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_red_3.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_red_3.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 308,
+      "sha256": "0C2D6A99F81FACE8A5275C9E5037A4A9420A89BA3CEEC893DF527DAAAB73A8FC"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_red_4.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_red_4.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 318,
+      "sha256": "207F9C3EC94645A84D97B1172937B15B72E2E09425EA005BFB54CE310D3D6110"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_red_5.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_red_5.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 313,
+      "sha256": "513CF07432FB1250569C14A0D3809D296DD44D88FAE14F21093A576175DC6085"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_red_6.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_red_6.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 322,
+      "sha256": "41D1F55322D0AB71078315104659033500BAF744B691DC40F1E016D6CF765A0B"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 353,
+      "sha256": "BAFAA214FB8FB440758ED4E410AD360235CC171628B7734C15770F2F57CB9438"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 398,
+      "sha256": "78AC263F713E3F810A0724B02A5D3BEB1906E7B7D3E50A8BF0F445450BD4B495"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_3.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_3.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 309,
+      "sha256": "D9A7CFB52954951242CAB8968506739285FE615E6EA3E845A6E0C6AE76D381A5"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_4.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_4.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 375,
+      "sha256": "968516012F3A2162A3DCD11F7E325DB1EE91C81312AC4440F496A86F338317EA"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_5.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_5.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 369,
+      "sha256": "9410CD3FFFE64E6094A3C3278E0666851193A0D5030C7ED0EA71F8C9B0FF9830"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_6.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_6.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 383,
+      "sha256": "6985A934CA20BF970EC880BE83128DF61B7F0AAF876B5A26C73DC35F99F3FC67"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_cursed_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_cursed_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 346,
+      "sha256": "8B844EF4A8A131BF2CC31866B4B6A2C23227F407FAC0E970A75DE4D316FEB62D"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_cursed_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_cursed_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 294,
+      "sha256": "62AF2DD19BD0E83075D1FFBD3C0BA977CB6E1F0FE84B0073F9B05C70A2901E45"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_cursed_3.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_cursed_3.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 303,
+      "sha256": "F96D31482D2C2367DF7669B313B77D25D3A05E6D62FADCB36E13B68D7B3354DC"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_cursed_4.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_cursed_4.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 322,
+      "sha256": "E2C4438F261CE313A10536C2293F1BEAC0478F9502A8C68B9B55CAC1D3CD920D"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_cursed_5.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_cursed_5.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 311,
+      "sha256": "081DE474913F8B4AF4088A6BEB46EFC7192EF777AEB105181C092B5CE19CD607"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_cursed_6.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_cursed_6.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 317,
+      "sha256": "2672E17496FC3B821EED4B49EF2B77BE021C29C3E5D8DAC51164AB17D333EAA0"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_hard_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_hard_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 389,
+      "sha256": "C801AB74A0FBC6F982FB9918E6AAF333B20C58BE5169A289E0200D3CCAF26D0E"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_hard_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_hard_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 365,
+      "sha256": "58C7EC34A14CB8A043D9A57D82BB364915C433F40298916E0E6D5E13C75E9404"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_hard_3.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_hard_3.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 334,
+      "sha256": "07934CC7E2BF2F799002DF0302668D5DE4B4DC1E2A9E777919095565F2B81491"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_hard_4.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_hard_4.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 387,
+      "sha256": "C20757101F3B1D30E2803D0F2426AD6FA848161B6ED6A9485FF721BC05A1C381"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_hard_5.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_hard_5.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 349,
+      "sha256": "6FAE9CC545DC47F9847AC7EC1C43C3359D85C54CCC280F8C4A3107A51B3D49EE"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_hard_6.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_hard_6.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 382,
+      "sha256": "4A64C21EE48C9D4BA03BE17994FE9C554D36A8C46A72D7847230E88547419E25"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_hard_border_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_hard_border_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 406,
+      "sha256": "D3AA83ACA7C53776A97E060BFE151848B0FE500867D4C85B5443831ECF765E27"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_purple_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_purple_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 306,
+      "sha256": "6DDF8DC89AC4A4DD9D8349BB8F7F1FC1C6F1C4DD4A368736987D4C28B6763CBA"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_purple_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_purple_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 312,
+      "sha256": "1AC170F31426B8A6F3D9C5055DEB91FEE173582B2F9D5FAE018E14175DD1669C"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_purple_3.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_purple_3.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 300,
+      "sha256": "D8702919ECA5229182BD5731D3F2D1F62B7E8CE40280A42EBBD659580F3DAA2E"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_purple_4.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_purple_4.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 312,
+      "sha256": "0D15C7A1ED035397A9213135A1961B906CBBA1C446AA76C3F4E903E58CB571DF"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_purple_5.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_purple_5.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 308,
+      "sha256": "474BE8B2AC69B050CF3C89AB8D118EE3425FCA063D5BF33752F68E6AEFE74900"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_rock_purple_6.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_rock_purple_6.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 318,
+      "sha256": "0C2A1A67D7B8B66FDA6FBAC77A2DCC24F21F32A2B1EBA02F0C7BDC924F867A55"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_sand_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_sand_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 400,
+      "sha256": "81295AE26B2410702EDE2E39504243FD45095428F25EC1F4B922E89091ECB360"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_sand_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_sand_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 387,
+      "sha256": "56533711464979E236DD2FFF58A0AD50452EA40F82B02C2FC244F8E95E9476D0"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_sand_3.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_sand_3.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 339,
+      "sha256": "039714F6EA67225CFA209AE1722FED39E1F26B3E006C3A9524FCFB132C9ED603"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_sand_4.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_sand_4.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 386,
+      "sha256": "288637882187E812E8F1AAD2C30A8FE2CB5945C29E5BEFC3E82B866656C7AABA"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_sand_5.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_sand_5.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 381,
+      "sha256": "F759FA82119487D7A211E4D0320A4EBA76433A0AC67DB1E01ED27E084F1F8D8C"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_sand_6.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_sand_6.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 383,
+      "sha256": "A18174AA2B3474B94693DCD706180192D726EB65928E7742F36F5BF8AB432299"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_sand.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_sand.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 99,
+      "sha256": "3EE4D1C9D25B837B81D12E7148ACA3FCB177D7B089F93EA313F606951B3B2214"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_skull_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_skull_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 272,
+      "sha256": "32F2C34E5C4F5C2668D69A7FB935349D32804B4213A3304D4C282A7265E05AD8"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_skull_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_skull_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 303,
+      "sha256": "28D78E8914225CD576D6FBA10DA060D51FEA3FEB4F56FC2A5D1A969370A6D435"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_snow.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_snow.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 121,
+      "sha256": "75724F6FBA634D1EE38ABBCFF7E346257FC705C95C3D847E97B354249305C3C4"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_snowrock_test_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_snowrock_test_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 304,
+      "sha256": "378180E3B8B1DEC3A9108B1B0CC5BB7FD4E7D12C2B6F96EFC14D49815CB8D9F3"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_snowrock_test_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_snowrock_test_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 293,
+      "sha256": "307DAA353983632C64CF54016B4C9ADB79C4277BEC6D6B53EEEF66DC952B54EF"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_snowrock_test_3.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_snowrock_test_3.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 299,
+      "sha256": "8204114E2D5C53C7FB937D4983D1E4E900BAA7D7D5172166F2792236BBDEC687"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_snowrock_test_4.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_snowrock_test_4.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 300,
+      "sha256": "B08B4A14753CC0F122AA7C842EDC8E42CBBF2D90D56F5089347EA2BF6A3AED4E"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_snowrock_test_5.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_snowrock_test_5.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 306,
+      "sha256": "E649CF19148B77F033F788019EF968619CBF36D8C6825C67996E3CC3EB73E3CF"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_snowrock_test_6.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_snowrock_test_6.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 253,
+      "sha256": "476CF11404540EC3B8C344223FBA37AD61AA37D40FE777A7138C2140D85436F9"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_soil_dead_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_soil_dead_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 471,
+      "sha256": "071630B0018E6C9D5B4A262E28BBA4A7C86F8FA5D01471F2034D08D6BB2A818D"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_soil_lush_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_soil_lush_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 513,
+      "sha256": "6DC9A24CA40CCECC704FCDE3C0697DDA9C2E1393C7C33369BFA51208259429E6"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_soil_lush_dark_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_soil_lush_dark_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 493,
+      "sha256": "4820410B191AA6D635E29315991B06D6E21A6D3BF7268441C9FD9003574BC487"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_steel_grey_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_steel_grey_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 462,
+      "sha256": "EC2753B7C5867A94B6583EE3570C40B425A63422A316B5220FF7E3F08B053A46"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_steel_grey_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_steel_grey_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 395,
+      "sha256": "1CB93542D71C1E6D3E1F43D40527D11A2C46C4DCBF8FD64B812DE8CEA60332F7"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_steel_rusted_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_steel_rusted_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 6181,
+      "sha256": "F691BCDF928727C13DE1E90A07B7ABC60C4795CBE0B22F413DA223AF5A47E8D9"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_steel_rusted_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_steel_rusted_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 7489,
+      "sha256": "EE5EB63646E60913A506D364F982196B3FC554E664D6C86CA1AE285FF6D0B8A9"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_steelfrost_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_steelfrost_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 429,
+      "sha256": "736F4F12A8A59692877D0D08299028F830D8288AAA0F0DF6D882F97416BBFFD5"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_steelfrost_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_steelfrost_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 686,
+      "sha256": "EA910E60DA2373561A45ED6CBD9C3AAD2951AF4DCB159F82BB82C42733CF3F76"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_steelpanel_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_steelpanel_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 426,
+      "sha256": "B2132FD0E9750559A75605C8BA6FAACDD41CE77B401E5543175B2E03699F8E6C"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_steelpanel_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_steelpanel_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 1369,
+      "sha256": "E33DDE515CD5E9FE04C3944EBA7851A48539C04D219EFD4AF29821A8A83E8263"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_alt_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_alt_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 615,
+      "sha256": "B33306C1787A9A6B8214D084C498729B131C940199F06CE2F20B07A5EDCAD466"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_alt_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_alt_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 323,
+      "sha256": "0162064F4365BD9344065192C9EF1BD56E1ED1AA9D4FB94368A53D8762E6AE8E"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_broken_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_broken_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 1413,
+      "sha256": "745A45669AC4BDCC706E86ACCC4A92969DF5887817685C4234C88200B5163BCD"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_broken_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_broken_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 943,
+      "sha256": "984907EC6855062249C6BA89ED61CDE8C6EB070C6AB6FEED0E48A344D909DE67"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_diamond_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_diamond_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 542,
+      "sha256": "76C0512A75329190D0F436591C2D8FD2945FD15038CE240141FDABA0BC8CDF5C"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_diamond_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_diamond_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 463,
+      "sha256": "48C845C5A234F67B51FB8B4E688AEDEADEE8895E1B292EA173B7823E6B9F86CB"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_golden_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_golden_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 702,
+      "sha256": "CEAADAD1E7C06A429D3E6490A1C388DDA2B675B2FFB289E7778C8B07464B4A44"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_golden_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_golden_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 637,
+      "sha256": "8B0B27D313FF36DB99E00D70D69DBAC9E26A25774BD0052D169C25257B2BE97B"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 443,
+      "sha256": "94269F263487F16933D8FB7B979A02980DE95E55B67B2D5DFDFAC40E5D239D12"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_ruined_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_ruined_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 509,
+      "sha256": "CE73088AB5A8765F0BCA981F210F5F3E981243668E744C54162707D7D2F0DAFF"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_ruined_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_ruined_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 485,
+      "sha256": "437E65517041EEE3E7EB9C4850C8D6ADA320062AC710743E12898598D3CE7B37"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_temple_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_temple_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 315,
+      "sha256": "6662F8CC45F92230692DECAFFC0A5ABE0310CDC8445B3DE827D4336CEA46C52A"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_templeslab_crumbling_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_templeslab_crumbling_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 344,
+      "sha256": "9B2D83FD185ABAF7DDFCEC02F9788E858138D8A2C46D0428DA3C042F1387D5C7"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_templeslab_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_templeslab_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 278,
+      "sha256": "6BD02BF67CD3D879317F54881457ADB091EC719351B22F6D5DB89CD6B84194CA"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_templeslab_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_templeslab_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 213,
+      "sha256": "ED3574A78CCB975BC59AFDCBAC8595DCE9EADE1B74B420A995F1DF2CC9B790FC"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_vaultrock_1.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_vaultrock_1.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 443,
+      "sha256": "0C018BB2C83EF01E1E77149E263040DF46AD64F90E6436A55110CFE7224F9311"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_vaultrock_2.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_vaultrock_2.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 377,
+      "sha256": "33E0F4E9E654130058FF9E4EDD0A53B83BEA715679B3D425054C6C5E01F5CD8F"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_vaultrock_3.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_vaultrock_3.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 334,
+      "sha256": "6C40341A6646BE377526F11394A8034A0E3DD2A924A80E37501995F10648E69A"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_vaultrock_4.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_vaultrock_4.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 378,
+      "sha256": "E5E1516AF6ECAD669CDB3F377D1A6A9485A5C3F08EB050BB0B31AD42978D4576"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_vaultrock_5.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_vaultrock_5.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 358,
+      "sha256": "15F63D996FA94CAADBBEC9723D4561D246597CECE837A0E5BD929EC55DEC9E8C"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_vaultrock_6.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_vaultrock_6.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 384,
+      "sha256": "E21365D2643B52C65CEF17FEFF94D027FFDA745223A721DC0EF966E36BD3B1A7"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_wizardstone_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_wizardstone_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 646,
+      "sha256": "C3EEBB6F3A3A807BC8BB4286650C2334E0C533C05139925BF8B86668C3DC050F"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_wizardstone_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_wizardstone_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 749,
+      "sha256": "7FA844A4ED109D2E1F86601270E07BCDFD18AA4D6714F180C3AA32EA62211019"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_wood_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_wood_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 96,
+      "sha256": "28397D38EBD09696D95D05EE9C2D073FB4DFE993FA95F8F69FE4408E8F8A62F2"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_wood_planks_hor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_wood_planks_hor.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 614,
+      "sha256": "1A5F99944FCE5CB25B971EA17FAE917736CDEC4174AFB2BC6CB2EA99FD9E21A4"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_wood_thin_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_wood_thin_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 160,
+      "sha256": "538C22FE216EBB86E98153CEFC1887D611AA83095E973F6CFD29BFAE086043C8"
+    },
+    {
+      "path": "data/materials_gfx/edge_files/edge_wood_ver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/edge_files/edge_wood_ver.png",
+      "purpose": "authored-edge-graphics-image",
+      "authored": true,
+      "bytes": 126,
+      "sha256": "F4F94C9D6415D40DA9002EF7A9C6C5CE8124D8AD542868E8F0C73803C3A2DFDB"
+    },
+    {
+      "path": "data/materials_gfx/endslime.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/endslime.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 475,
+      "sha256": "08408F6321756191C2F5A52ACC91B0D61ABC8AD2FE85374FAD5203EEB85CE16A"
+    },
+    {
+      "path": "data/materials_gfx/fun.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/fun.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 9547,
+      "sha256": "48D08D409BB5822D8D09812AEF3E9DFF5044B7EF7DCB5A64C9F5FBC1482EAA0E"
+    },
+    {
+      "path": "data/materials_gfx/fungi.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/fungi.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 343,
+      "sha256": "85E149B831D5E82704D11F1CBC533434E6E84004663AF033DA2B9C24F8DF3D26"
+    },
+    {
+      "path": "data/materials_gfx/glass.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/glass.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 565,
+      "sha256": "451CA025031F1E5BCE475B123D79561942929FDDED46DF8746D71A1508C8878A"
+    },
+    {
+      "path": "data/materials_gfx/glowrock.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/glowrock.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 589,
+      "sha256": "5082E7868074461388624C57B985BA891D531B5AC9EDFC7AC3165AFE7D414765"
+    },
+    {
+      "path": "data/materials_gfx/gold.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/gold.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1559,
+      "sha256": "E654A8641545626A120EB1084E069E736B6417E0D5F894B33B9D1FA28620AD34"
+    },
+    {
+      "path": "data/materials_gfx/grass_dark.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/grass_dark.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 15023,
+      "sha256": "3B598D5111033A85B632DF2260893DA8B8CC462D67026522A1B4564C728EE85B"
+    },
+    {
+      "path": "data/materials_gfx/grass.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/grass.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 151,
+      "sha256": "7D9A007A690B7C344FF1F6ED5A1CFCCE4C35300A4352A0B5E71CD15B2154E267"
+    },
+    {
+      "path": "data/materials_gfx/gunpowder_tnt.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/gunpowder_tnt.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1165,
+      "sha256": "8E875F898F367FDD59FDC7ACA14F0110119FB2B23C8C35F984EE01632E9DAB11"
+    },
+    {
+      "path": "data/materials_gfx/gunpowder.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/gunpowder.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1149,
+      "sha256": "9964A5F4C75E8DD390FA91ED157608ADDD978F068AC75F49BA8EDF01270702ED"
+    },
+    {
+      "path": "data/materials_gfx/honey.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/honey.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 277,
+      "sha256": "C5302911445793CE3341791692A14B006930DE983DFC4DD64BFEE1A0795A5DBA"
+    },
+    {
+      "path": "data/materials_gfx/ice_radioactive.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/ice_radioactive.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 676,
+      "sha256": "8CD10A87C0D986A35AF4B22FE7C368303F810381FFCA4C7B4580858955F19F98"
+    },
+    {
+      "path": "data/materials_gfx/ice.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/ice.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 684,
+      "sha256": "1E43DBF1380B3081A76802220E9BDBB50BFD2F137D230EC0C44778EEBD14C051"
+    },
+    {
+      "path": "data/materials_gfx/lavarock.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/lavarock.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 563,
+      "sha256": "E5327314ECD99BCC6171765A565A0F8E63DD88BBBF755ECAE8E558A97CF78135"
+    },
+    {
+      "path": "data/materials_gfx/magic_liquid_weakness.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/magic_liquid_weakness.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 448,
+      "sha256": "9CD0259736E560D3F9CC470DE3B51975B7082B2CEAE9C384753F23A2F049ED53"
+    },
+    {
+      "path": "data/materials_gfx/meat_done.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/meat_done.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 710,
+      "sha256": "0B378039F3A8CCB8B4727893CEEF6166EBE8F1F5170771BCF12ADBB8AAF27FB2"
+    },
+    {
+      "path": "data/materials_gfx/meat_rotten.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/meat_rotten.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 729,
+      "sha256": "33E0B60CD12090440F1796A6BBA11677BEEC9331C26CB23405D50BA414754D2C"
+    },
+    {
+      "path": "data/materials_gfx/meat_static.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/meat_static.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 8289,
+      "sha256": "4B29235246569F2856FFDD322F46689C94B2C20A06043A14C21644C5E1287B21"
+    },
+    {
+      "path": "data/materials_gfx/meat.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/meat.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 607,
+      "sha256": "D0BADD818982EF94FB6FFFDC3A11B1169C2EB0D44FB584574A6E8A2C29AC7020"
+    },
+    {
+      "path": "data/materials_gfx/meteor.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/meteor.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 769,
+      "sha256": "E07099B9F606FC2724E4D3ABB1DD42CA06F7C36ABA2CA6D8185E7660BFF09766"
+    },
+    {
+      "path": "data/materials_gfx/moss.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/moss.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 467,
+      "sha256": "DF78F0FE110FCF0C382F5B8C979D218789BAB34B620C3F4EC540231BBF885DF4"
+    },
+    {
+      "path": "data/materials_gfx/mud.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/mud.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1050,
+      "sha256": "FE417FA4734BD3C6E9678F323A0AAE859A8154E341D948AF106960BDCECD8AC6"
+    },
+    {
+      "path": "data/materials_gfx/neon_tube_cyan.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/neon_tube_cyan.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 14538,
+      "sha256": "9EA536B55CF5EBEFE6A127AFDB55EC53EB6BF20B29AAC9D48AF92F30A2D4337A"
+    },
+    {
+      "path": "data/materials_gfx/neon_tube_purple.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/neon_tube_purple.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 343,
+      "sha256": "85E149B831D5E82704D11F1CBC533434E6E84004663AF033DA2B9C24F8DF3D26"
+    },
+    {
+      "path": "data/materials_gfx/polymorph_unstable.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/polymorph_unstable.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 808,
+      "sha256": "A0803A123D4DFE7BDEF11A977A7B5FF7778BFCA2EB1A8548872C345A009E641B"
+    },
+    {
+      "path": "data/materials_gfx/pus.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/pus.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1772,
+      "sha256": "621F750BD6B2344C5DAE5A685855027CD3CD197BC762756C2E51F6B8CA93CA86"
+    },
+    {
+      "path": "data/materials_gfx/rock_grey.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/rock_grey.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 56646,
+      "sha256": "23D90F944FE963242D5840E22ADB58188D0129C27973DD13727BAE1FEC5636F3"
+    },
+    {
+      "path": "data/materials_gfx/rock_hard_border.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/rock_hard_border.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 584,
+      "sha256": "42D3ED09E2F9E87ADED713A464AE899AB122208EF2C3318F366D5E37AAA8631B"
+    },
+    {
+      "path": "data/materials_gfx/rock_hard.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/rock_hard.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 588,
+      "sha256": "D445CA203420263CFEE845A35ABB03FFA367F875C75DE4C9E70B4EDC798C2FEA"
+    },
+    {
+      "path": "data/materials_gfx/rock_radioactive.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/rock_radioactive.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 567,
+      "sha256": "62B02D14D871226EDC7A72EED0DD317CBF9762958F0E1D92EEA22BBDCB35125A"
+    },
+    {
+      "path": "data/materials_gfx/rock_static_purple.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/rock_static_purple.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 4252,
+      "sha256": "27594F882DDA40198B8D7E5EC1B091CE021DCC3DEAC75AF56BDBC0AA4AD190B6"
+    },
+    {
+      "path": "data/materials_gfx/rock.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/rock.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 588,
+      "sha256": "DF3CCB53F58EAD2F26BA97161424A8E53DE45E6CC0C12C9B1B823A20EC9C8C9E"
+    },
+    {
+      "path": "data/materials_gfx/salt.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/salt.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 2266,
+      "sha256": "642E56A37F3C69AB8FEE9DBF88D7A4C2A3C335DA39305DA508B8E5941731CA25"
+    },
+    {
+      "path": "data/materials_gfx/sand_blue.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/sand_blue.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 679,
+      "sha256": "E5EE6D811116FDB3728B8241DE38A8E037B8A9D15E0E25AE381913A2C11DB227"
+    },
+    {
+      "path": "data/materials_gfx/sand_surface.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/sand_surface.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 23516,
+      "sha256": "D45C9C2237217BBBC2EF090569D256E28E56D689A0A721D65A0A133B1F98F4E2"
+    },
+    {
+      "path": "data/materials_gfx/sand.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/sand.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 22119,
+      "sha256": "DBB958606517D2F435060B99C55F1AB0334909CF6F7B1D3A14BCDB7EBEB9DBD2"
+    },
+    {
+      "path": "data/materials_gfx/silver.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/silver.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 251,
+      "sha256": "2872F7E3F2BC2A13D09BB9B330AEB6A5E3DEAD358144937624EC51B785E8D1C7"
+    },
+    {
+      "path": "data/materials_gfx/skullrock.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/skullrock.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 2840,
+      "sha256": "68F6C35163864EB8EF4DBF51CFE08B469748AB0A6FFAB870F44F467E1D43CD10"
+    },
+    {
+      "path": "data/materials_gfx/slime_green.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/slime_green.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 488,
+      "sha256": "DC07E460BB97C08559B6219A4ADA3574A8F4645AD2F98945337C7E5E4B706152"
+    },
+    {
+      "path": "data/materials_gfx/slime.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/slime.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 357,
+      "sha256": "88EB9AD478CB7AB3CC464CD2379CDE318BA66A710EE34DE00ACE357D5FDCD13C"
+    },
+    {
+      "path": "data/materials_gfx/snow.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/snow.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1381,
+      "sha256": "81C3E3560811C06DB0FACE1E6DDF93FD6CD50C8A4DC9A9192090A86EED7C6435"
+    },
+    {
+      "path": "data/materials_gfx/snowrock.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/snowrock.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 575,
+      "sha256": "2C9BF9493A52A9EA205FB2DC2790AA5940B8CE956386DD04EA9BD272ECE5C630"
+    },
+    {
+      "path": "data/materials_gfx/soil_dead.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/soil_dead.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 464,
+      "sha256": "05C33A1F2A9188CCF80BEC3FAC1910B48F26795D9DC464311A5101D2DAC503F4"
+    },
+    {
+      "path": "data/materials_gfx/soil_lush_dark.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/soil_lush_dark.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 761,
+      "sha256": "03CBEC6BD8C9DD77407845F29FBAC5EF6B97C8F065648AF6AE32F2F5755BCA5F"
+    },
+    {
+      "path": "data/materials_gfx/soil_lush.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/soil_lush.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 820,
+      "sha256": "B0CCE39A220DD3F282AE2419CE196E2A64762E2F1FF802770ACDC92896F86529"
+    },
+    {
+      "path": "data/materials_gfx/soil.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/soil.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1016,
+      "sha256": "7C3B4951A59C9C97045D2394763C712DDBCA8131168A63FE05A2F9094DA81F12"
+    },
+    {
+      "path": "data/materials_gfx/steel_rusted.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/steel_rusted.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 7608,
+      "sha256": "5BD831276E7871DD45F8BA7145F02C8E0EF6A611E14C7C63247B942E3C1F8272"
+    },
+    {
+      "path": "data/materials_gfx/steel.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/steel.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 186,
+      "sha256": "060A725BA7D4293067BFC81A69CF2DDE18BED57DF178B2AC7E3DE10B97B0F420"
+    },
+    {
+      "path": "data/materials_gfx/steelpanel_grey.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/steelpanel_grey.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 989,
+      "sha256": "1F886D5AC07CBA268D735D2D92A73D1D7AECB85194C5639EEF34F552452BE75A"
+    },
+    {
+      "path": "data/materials_gfx/steelpanel.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/steelpanel.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1039,
+      "sha256": "4F16BB7BFB386162E9154E854BC59E9A2D8A22330F406DEE8267D2208040DCBB"
+    },
+    {
+      "path": "data/materials_gfx/steelpanelfrost.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/steelpanelfrost.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 2765,
+      "sha256": "BAEA8E0E08716F5C71D9916735E98875EBB38FDA9C14A3DBD1981507EE2C7611"
+    },
+    {
+      "path": "data/materials_gfx/steelpanelmoss.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/steelpanelmoss.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 2793,
+      "sha256": "993CB3093C2A4888BAFC908B2901EA5212D986668F2708DBE247043404F017D9"
+    },
+    {
+      "path": "data/materials_gfx/templebrick_alt.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/templebrick_alt.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 528,
+      "sha256": "B1C7DA4CEDA5895B43C42D2AE566E44AFE818FD93A184AE30E863C688FAAA1A3"
+    },
+    {
+      "path": "data/materials_gfx/templebrick_broken.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/templebrick_broken.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1846,
+      "sha256": "DE9CF262422E7146E20E064DFC0908571952B40E8E381FFFD7F81AA1E910870C"
+    },
+    {
+      "path": "data/materials_gfx/templebrick_diamond.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/templebrick_diamond.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 811,
+      "sha256": "45098C5B10C35CE735833DB3C27A34D4546611FC518D188AC995B06724BB1FED"
+    },
+    {
+      "path": "data/materials_gfx/templebrick_ruined.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/templebrick_ruined.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1228,
+      "sha256": "BEB028D733944F6A761794E2F4B360F2EC048F59610358F0562EC2EEB08E9E78"
+    },
+    {
+      "path": "data/materials_gfx/templebrick.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/templebrick.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 558,
+      "sha256": "47AAD951E8440E91CF42DB595794EA1A69D133250B2225F72D1D52A0771DD94A"
+    },
+    {
+      "path": "data/materials_gfx/templerock.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/templerock.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 593,
+      "sha256": "ADCA14BAD58E97E710B10FEC58C4B7A9A160D5D6C20D02AB30D89122BE62BCDA"
+    },
+    {
+      "path": "data/materials_gfx/templeslab.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/templeslab.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 359,
+      "sha256": "B2341E1D89B0DD195F315B16405CFE0243646C23E03A99E84559692A73310690"
+    },
+    {
+      "path": "data/materials_gfx/test_vine.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/test_vine.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 197055,
+      "sha256": "0FFE7A4B3DE8EFC9E4AF2016A37753923807D35AC5879AC8AC0E2D7B81FC983E"
+    },
+    {
+      "path": "data/materials_gfx/the_end.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/the_end.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 769,
+      "sha256": "E07099B9F606FC2724E4D3ABB1DD42CA06F7C36ABA2CA6D8185E7660BFF09766"
+    },
+    {
+      "path": "data/materials_gfx/vaultrock.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/vaultrock.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1375,
+      "sha256": "5B4EE2DC081C40124F0124E60C870AC40F87643D475E61D5BDFBFED6FAA14BB0"
+    },
+    {
+      "path": "data/materials_gfx/wizardstone.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/wizardstone.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 1789,
+      "sha256": "5873FE7AD5F2055339A39897A1CCAECEE495C21CA9C3103DFF9DB59AC21E8902"
+    },
+    {
+      "path": "data/materials_gfx/wood_vertical.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/wood_vertical.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 805,
+      "sha256": "8F39C36D2D7FAE6BFD3FF8B25B37C8B236E836C7262D7CDFED4367C580FBB9C7"
+    },
+    {
+      "path": "data/materials_gfx/wood.png",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials_gfx/wood.png",
+      "purpose": "authored-material-appearance",
+      "authored": true,
+      "bytes": 559,
+      "sha256": "F039A1DE3658A3C734068FE161A3E8C51C95DC9EB561AD8734B00028A37AF8C7"
+    },
+    {
+      "path": "data/materials.xml",
+      "sourceArchive": "public/data.zip",
+      "sourcePath": "data/materials.xml",
+      "purpose": "authored-edge-graphics-definitions",
+      "authored": true,
+      "bytes": 418728,
+      "sha256": "122DF34514EDAF312E1A15A619B3D6A44D49CE605C929D5950C9051A57429D04"
+    },
+    {
+      "path": "data/wang_tiles/clouds.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "clouds.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 15116,
+      "sha256": "AD1DB221F43807EB114AFA1519B644A7753DA2E78DCC2C2E31BF5325006C4B29"
+    },
+    {
+      "path": "data/wang_tiles/coalmine_alt.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "coalmine_alt.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 11650,
+      "sha256": "7663FBA98C71C27465FA813EA6689A040517376F10294FFF93A07CA3F19594B5"
+    },
+    {
+      "path": "data/wang_tiles/coalmine.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "coalmine.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 29390,
+      "sha256": "7E45205C7EB1E7A804E73F1AE7D7C3BBB37436D41F530E769C3921544041C8DC"
+    },
+    {
+      "path": "data/wang_tiles/crypt.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "crypt.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 16888,
+      "sha256": "FA24E33F30DB9816257AD2863B138F9830CA27B257EBD1C1022817126A8C454F"
+    },
+    {
+      "path": "data/wang_tiles/excavationsite.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "excavationsite.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 26353,
+      "sha256": "E81881033BBB30C545D0EADA8AABB87CFD87FEF816301D23A8841D13B3FC7B9C"
+    },
+    {
+      "path": "data/wang_tiles/fungicave.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "fungicave.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 28241,
+      "sha256": "890D0EDF7921CDE614522C3A1F3FE999F3543C81DC1893AAEEBD1ADD29372990"
+    },
+    {
+      "path": "data/wang_tiles/fungiforest.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "fungiforest.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 11609,
+      "sha256": "8343A15CBBC54F960BF88BDD8B5D1869E8B3197F6DEFA1259AF4790CC3531782"
+    },
+    {
+      "path": "data/wang_tiles/liquidcave.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "liquidcave.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 18348,
+      "sha256": "5B30E87F2470B2FC5FE1573C3F3BB2AEA15D5C507171E4DB8B2EAF5A64D44E83"
+    },
+    {
+      "path": "data/wang_tiles/meat.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "meat.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 33646,
+      "sha256": "D882362CF0DF0C4A4F98F56C3670B2497FCA1773624EEDBB19EB9119FD2CD376"
+    },
+    {
+      "path": "data/wang_tiles/pyramid.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "pyramid.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 21461,
+      "sha256": "A9D27FD1BF98FA4C3B64CCE3DADF247CD3B023077216D777D035AECBEBB1C1E8"
+    },
+    {
+      "path": "data/wang_tiles/rainforest_dark.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "rainforest_dark.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 17899,
+      "sha256": "C614647892FB0652B757D334BB41E64DC0C7AF409C04DF37468F8E296CF79B6C"
+    },
+    {
+      "path": "data/wang_tiles/rainforest_open.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "rainforest_open.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 16371,
+      "sha256": "AA79DBFB12ACC92F9001E95BA9047E248EE325AD4FD50126B6B5D50422F6C7E2"
+    },
+    {
+      "path": "data/wang_tiles/rainforest.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "rainforest.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 18043,
+      "sha256": "5C960968FD3B2281BAE4DA270E83C25F628E884AB42AA7F67B69E992DE181F6F"
+    },
+    {
+      "path": "data/wang_tiles/robobase.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "robobase.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 21111,
+      "sha256": "5834195EEA69BB8ADCE4FB29C18D030EA9187C8B1208C6CBF1646801E1CFF992"
+    },
+    {
+      "path": "data/wang_tiles/sandcave.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "sandcave.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 6757,
+      "sha256": "11DC4B08F9546E1169F731E25657721438ED721AD3977424A68C3EC6C1F6334C"
+    },
+    {
+      "path": "data/wang_tiles/snowcastle.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "snowcastle.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 19299,
+      "sha256": "4609C78BC15DAB9FC085DD7CD425649C76F47CE378C5E956147A7C83A1A2E3FB"
+    },
+    {
+      "path": "data/wang_tiles/snowcave.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "snowcave.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 48210,
+      "sha256": "8F52475C4057D16B1334CB1A69441DC1C7972014318391807D51DBD83A89987D"
+    },
+    {
+      "path": "data/wang_tiles/snowchasm.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "snowchasm.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 7015,
+      "sha256": "FFFA61809D759A2A3FB6CBE7AE890A76573DD7F020E6467C5770E50C0BACC63C"
+    },
+    {
+      "path": "data/wang_tiles/static/barren_fg.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "static/barren_fg.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 1658,
+      "sha256": "9A19C263468BE6050AEC5C7D34DF7D36F627FA7CFB47EECED16C75451F5F8FDA"
+    },
+    {
+      "path": "data/wang_tiles/static/boss_fg.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "static/boss_fg.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 1290,
+      "sha256": "00C5C8DF233650EC861DC17DE0CC541A3C6F1F96A37B0C2155854E09DF9ED736"
+    },
+    {
+      "path": "data/wang_tiles/static/darkness_fg.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "static/darkness_fg.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 1541,
+      "sha256": "7468DC995070AFF4D09A36282FB303464F981AB9CC9660CDFE333F29CCF4CD29"
+    },
+    {
+      "path": "data/wang_tiles/static/potion_mimics_fg.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "static/potion_mimics_fg.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 3907,
+      "sha256": "7962F31605D7FE73C0BD7ADCBF5122482C10B2C4E8A450C143BD8C2EABB4AD73"
+    },
+    {
+      "path": "data/wang_tiles/static/watchtower_fg.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "static/watchtower_fg.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 1447,
+      "sha256": "9A9A5B7BB5D7FEB0B101806B37973C3BC6C7F33D7105683179625E6888FBB305"
+    },
+    {
+      "path": "data/wang_tiles/the_end.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "the_end.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 16950,
+      "sha256": "3488D0CA0F542152214AA47891A324B02890E53B108D6FF43E0908B4D8DB4B2A"
+    },
+    {
+      "path": "data/wang_tiles/the_sky.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "the_sky.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 13242,
+      "sha256": "4BE0B7EF2A2C7D8DC926D8A5E5786F9C21C7EEE909D7E4C217275946EF7CC6E0"
+    },
+    {
+      "path": "data/wang_tiles/vault_frozen.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "vault_frozen.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 24886,
+      "sha256": "5B4A3AE3409EFDF5A7D7D94127A560D63E94E5EF237C332F124C8EDAD4CB6C07"
+    },
+    {
+      "path": "data/wang_tiles/vault.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "vault.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 26810,
+      "sha256": "3D85FA6062F9FA0AA1E5EF21676DAE572C1AFC29F49E9C2505BC92F9AF4B7176"
+    },
+    {
+      "path": "data/wang_tiles/wand.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "wand.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 31547,
+      "sha256": "24AB7929A2CA6B876D74CE42D091286D3D125A01DD286A95CFB0C36A76573AA3"
+    },
+    {
+      "path": "data/wang_tiles/water.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "water.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 1092,
+      "sha256": "451F3B2FCD3867E4180177D702796B7CB5D8E2E53214A5937F586A24E997B832"
+    },
+    {
+      "path": "data/wang_tiles/wizardcave.png",
+      "sourceArchive": "public/wang_tiles.zip",
+      "sourcePath": "wizardcave.png",
+      "purpose": "seeded-wang-generation",
+      "authored": true,
+      "bytes": 18070,
+      "sha256": "11B43F3A3D5653CE8529166E9B3D50E62E8A70B78BB48890A15E0D4EB632E268"
+    },
+    {
+      "path": "terrain/biome-config-index.json",
+      "sourceArchive": "generated",
+      "sourcePath": "GENERATOR_CONFIG plus canonical data paths",
+      "purpose": "deterministic-biome-config-lookup",
+      "authored": false,
+      "bytes": 2051,
+      "sha256": "B3FC71E4AAE68AA5C403394FEB79D6A2A81F40FA01C7AFADD8C1CC152987233A"
+    },
+    {
+      "path": "terrain/materials.json",
+      "sourceArchive": "generated",
+      "sourcePath": "public/assets/full_materials.json",
+      "purpose": "canonical-material-definitions",
+      "authored": false,
+      "bytes": 540977,
+      "sha256": "FEC244FFDE6FA1C439BB8A619B7346AD4A73D1740D4A57FFE8EA635BEC9A2E0C"
+    }
+  ],
+  "missingPixelSceneMaterialPaths": [
+    "general/boss_arena_top.png",
+    "general/boss_victoryroom.png",
+    "general/bunker.png",
+    "general/bunker2.png",
+    "general/cauldron.png",
+    "general/cavern.png",
+    "general/clean_entrance.png",
+    "general/essenceroom.png",
+    "general/fishing_hut.png",
+    "general/friendroom.png",
+    "general/funroom.png",
+    "general/greed_treasure.png",
+    "general/huussi.png",
+    "general/lavalake_pit.png",
+    "general/lavalake_pit_cracked.png",
+    "general/lavalake_racing.png",
+    "general/meatroom.png",
+    "general/mystery_teleport.png",
+    "general/null_room.png",
+    "general/ocarina.png",
+    "general/orbroom.png",
+    "general/rainbow_cloud.png",
+    "general/roadblock.png",
+    "general/roboroom.png",
+    "general/secret_lab.png",
+    "general/solid_wall_hidden_cavern.png",
+    "general/teleportroom.png",
+    "general/the_end_shop.png",
+    "snowcastle/altar_snowcastle_capsule.png",
+    "snowcave/altar_snowcave_capsule.png",
+    "vault/altar_vault_capsule.png"
+  ]
+}

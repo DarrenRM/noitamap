@@ -27,6 +27,9 @@
     "dev": "vite",
     "generate": "node ./src/data/data_generators/map_definitions_maker.cjs",
     "test-telescope": "vitest run tests/telescope-integration.test.ts tests/telescope-wang-tiles.test.ts",
+    "terrain:build-assets": "node scripts/build-terrain-asset-package.mjs",
+    "terrain:validate-assets": "node scripts/validate-terrain-asset-package.mjs",
+    "terrain:test": "vitest run tests/material-appearance.test.ts tests/noita-noise.test.ts tests/wang-type2.test.ts tests/vegetation.test.ts tests/pixel-scene-stamp.test.ts tests/whole-map-tile-source.test.ts tests/edge-graphics.test.ts tests/edge-graphics-renderer.test.ts tests/edge-graphics-schedule.test.ts tests/png-decode.test.ts tests/terrain-backend-config.test.ts",
     "update-and-build": "node scripts/update-telescope.cjs"
   },
   "repository": {

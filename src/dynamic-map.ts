@@ -30,6 +30,10 @@ import {
 import { probeBakedDZIs, type BakedDziProbeResult } from "./telescope/baked-dzi-loader";
 import { perkNameKey } from "./telescope/perk-i18n";
 import { gameTranslator } from "./game-translations/translator";
+import {
+  isReconstructedTerrainEnabled,
+  RECONSTRUCTED_TERRAIN_CACHE_TAG,
+} from "./terrain/backend-config";
 
 // ─── Types & state ───────────────────────────────────────────────────────────
 
@@ -243,12 +247,19 @@ export async function runDynamicMap(
   if (urlKind === "none") unlocks = [];
   // (urlKind === "all" → unlocks stays null → telescope's default = all)
   const lightMode = isLightMode();
+  const reconstructedTerrainEnabled = isReconstructedTerrainEnabled();
+  if (reconstructedTerrainEnabled) {
+    document.documentElement.dataset.reconstructedTerrainCacheTag = RECONSTRUCTED_TERRAIN_CACHE_TAG;
+  } else {
+    delete document.documentElement.dataset.reconstructedTerrainCacheTag;
+  }
   // Dedicated pillar achievement channel (`&p=`). Independent of `&u=`: it only
   // affects pillar segment lock state, but a change must still re-render, so it
   // joins the cache key.
   const pillarFlags = getPillarFlagsFromURL();
   const pillarKey = pillarFlags ? "p" + pillarFlags.length + ":" + pillarFlags.slice().sort().join(",") : "p-";
-  const unlockKey = (unlocks ? unlocks.sort().join(",") : "all") + (lightMode ? "|lm" : "") + "|" + pillarKey;
+  const unlockKey = (unlocks ? unlocks.sort().join(",") : "all") + (lightMode ? "|lm" : "") + "|" + pillarKey +
+    (reconstructedTerrainEnabled ? `|${RECONSTRUCTED_TERRAIN_CACHE_TAG}` : "");
 
   // 0. Skip only if same seed, same unlocks, and overlays still present.
   if (seed === currentSeed && unlockKey === currentUnlocksKey && dynamicRendered && hasDynamicOverlays()) {
@@ -290,7 +301,7 @@ export async function runDynamicMap(
   // ?nb=1 disables the baked fast path entirely. The bake page uses it so a
   // re-bake of an already-deployed seed still runs a real local generation
   // (the export hooks need live tileLayers, which the baked path never has).
-  const noBaked = new URLSearchParams(window.location.search).has("nb");
+  const noBaked = reconstructedTerrainEnabled || new URLSearchParams(window.location.search).has("nb");
   const bakedProbePromise: Promise<{ probe: BakedDziProbeResult; generation: GenerationResult | null } | null> = (async () => {
     try {
       if (noBaked) return null;
@@ -368,7 +379,8 @@ export async function runDynamicMap(
     fetchDailySeed().catch(() => null),
     fetchPreviousDailySeed().catch(() => null),
   ]);
-  const likelyBaked = (_todayD !== null && seed === _todayD) || (_prevD !== null && seed === _prevD);
+  const likelyBaked = !reconstructedTerrainEnabled &&
+    ((_todayD !== null && seed === _todayD) || (_prevD !== null && seed === _prevD));
   if (!likelyBaked) {
     await ensurePersistentBiomeBackgrounds(viewer);
   }
@@ -419,7 +431,15 @@ export async function runDynamicMap(
       // 2. Generate with unlock state
       t = performance.now();
       console.log(`[DynamicMap] Generating seed ${seed} (unlocks: ${unlocks ? unlocks.length + "/" + UNLOCK_KEYS.length : "all"})...`);
-      result = await generateDynamicMap({ seed, ngPlus: 0, dailySeed: isDaily, unlocks, pillarFlags, parallelWorlds: lightMode ? [0] : undefined });
+      result = await generateDynamicMap({
+        seed,
+        ngPlus: 0,
+        dailySeed: isDaily,
+        unlocks,
+        pillarFlags,
+        parallelWorlds: lightMode ? [0] : undefined,
+        generateTerrainVerticalPlanes: reconstructedTerrainEnabled,
+      });
       if (myToken !== generationToken) { onLoadingChange?.(false); return null; }
       console.log(`[DynamicMap] Generation: ${((performance.now() - t) / 1000).toFixed(2)}s`);
 
@@ -553,6 +573,14 @@ export async function runDynamicMap(
     return result;
   } catch (err) {
     console.error("[DynamicMap] Pipeline failed:", err);
+    if (isReconstructedTerrainEnabled()) {
+      (window as any).__reconstructedTerrainError = err instanceof Error
+        ? { message: err.message, stack: err.stack ?? "" }
+        : { message: String(err), stack: "" };
+      document.documentElement.dataset.reconstructedTerrainError = JSON.stringify(
+        (window as any).__reconstructedTerrainError,
+      );
+    }
     return null;
   } finally {
     onLoadingChange?.(false);

@@ -76,6 +76,10 @@ export interface TileLayer {
   buffer: Uint8Array;
   width: number;
   height: number;
+  mapH: number;
+  minX: number;
+  minY: number;
+  validChunks: Set<string> | null;
   xmax: number;
   ymax: number;
   tileSize: number;
@@ -108,6 +112,8 @@ export interface PixelScene {
   name: string;
   key: string;
   variantKey?: string;
+  skipEdgeTextures?: boolean;
+  skip_edge_textures?: boolean;
   spawnPoints?: any[];
 }
 
@@ -118,6 +124,8 @@ export interface GenerationResult {
   worldSize: number;
   worldCenter: number;
   tileLayers: TileLayer[];
+  /** Terrain layers generated from each vertical biome plane. Plane 0 aliases tileLayers. */
+  terrainTileLayersByPlane?: Record<string, TileLayer[]>;
   biomeData: any;
   /** POIs keyed by "pw,pwVertical" e.g. "0,0", "-1,0", "1,0" */
   poisByPW: Record<string, POI[]>;
@@ -133,6 +141,8 @@ export interface GenerateOptions {
   dailySeed?: boolean;
   /** Which horizontal parallel worlds to generate for */
   parallelWorlds?: number[];
+  /** Generate distinct heaven/hell Wang products for the reconstructed terrain backend. */
+  generateTerrainVerticalPlanes?: boolean;
   /** Game mode: 'normal' or 'nightmare' */
   gameMode?: string;
   /** Unlocked spell keys. null = all unlocked. */
@@ -524,6 +534,26 @@ export async function generateDynamicMap(opts: GenerateOptions): Promise<Generat
   // Initialize pixel scene caches on each layer
   for (const layer of tileLayers) {
     layer.pixelScenesByPW = {};
+  }
+
+  let terrainTileLayersByPlane: Record<string, TileLayer[]> | undefined;
+  if (opts.generateTerrainVerticalPlanes) {
+    terrainTileLayersByPlane = { "0": tileLayers };
+    for (const [plane, pixels] of [["-1", biomeData.heavenPixels], ["1", biomeData.hellPixels]] as const) {
+      if (!pixels) continue;
+      const planeLayers: TileLayer[] = await generateBiomeTiles(
+        pixels,
+        w,
+        h,
+        GENERATOR_CONFIG,
+        seed,
+        ngPlus,
+        0,
+        gameMode,
+      );
+      for (const layer of planeLayers) layer.pixelScenesByPW = {};
+      terrainTileLayersByPlane[plane] = planeLayers;
+    }
   }
 
   // Step 3: Prescan spawn functions (once per seed, reused across PWs)
@@ -1590,6 +1620,7 @@ export async function generateDynamicMap(opts: GenerateOptions): Promise<Generat
     worldSize,
     worldCenter,
     tileLayers,
+    terrainTileLayersByPlane,
     biomeData,
     poisByPW,
     pixelScenesByPW,

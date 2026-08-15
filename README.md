@@ -1,3 +1,116 @@
+# NoitaMap — Reconstructed Terrain
+
+This experimental branch extends
+[acidflow-noita/noitamap's `dynamic-map` branch](https://github.com/acidflow-noita/noitamap/tree/dynamic-map)
+with a seed-driven terrain renderer. It keeps the existing Dynamic Map website,
+OpenSeadragon navigation, tile caching, POIs, PixelScenes, and screenshot-backed
+map while progressively replacing supported terrain with reconstructed Noita
+cells, material identities, authored textures, and edge graphics.
+
+The reconstruction is intentionally transparent about its limits. Unsupported
+pixels remain transparent so the existing stitched map stays visible underneath;
+they are counted as legacy fallback and are never reported as reconstructed
+terrain.
+
+> [!IMPORTANT]
+> This is active reconstruction work, not a claim of complete native visual
+> parity. Exact arbitrary-world EdgeGraphics RNG state, cross-chunk borders,
+> several biome-generation families, plants, lighting, fog, and final native
+> compositing remain open.
+
+## Try the reconstructed map locally
+
+```powershell
+npm install
+npm run dev -- --host 127.0.0.1 --port 5201
+```
+
+Then open:
+
+```text
+http://127.0.0.1:5201/?terrainBackend=reconstructed&nb=1&se=787751276
+```
+
+Relevant query parameters:
+
+- `terrainBackend=reconstructed` enables the reconstructed terrain backend.
+- `terrainDiagnostics=1` replaces unresolved transparent areas with diagnostic
+  checkerboards.
+- `nb=1` explicitly disables the baked-DZI fast path. The reconstructed backend
+  already avoids that path, but the flag is useful when comparing behavior.
+
+## Current accuracy
+
+Accuracy is tracked in layers so partial reconstruction is not presented as full
+parity.
+
+| Layer | Current status |
+| --- | --- |
+| Seed-dependent terrain topology | Partial. The whole-map renderer consumes Telescope-generated biome/Wang terrain; arbitrary whole-map native topology is not claimed. |
+| Material/cell identity | Reconstructed for supported Wang-backed biome routes and compiled PixelScene material images. Unsupported routes remain legacy fallback. |
+| Seeded texture/noise selection | Implemented for the currently supported Wang type-2 and material-noise routes. Broader native generation families remain open. |
+| Authored colors and textures | Loaded from a deterministic minimized terrain package for supported materials. |
+| Edges and transitions | Native-style interior and PixelScene EdgeGraphics passes are implemented. Exact arbitrary-world worker RNG phase and cross-chunk border placement remain unresolved. |
+| PixelScenes and authored structures | Material stamping, available visual artwork, and background composition are integrated. Full native scene behavior and later mutation are not closed. |
+| Vegetation | Generated grass material overlays are implemented. Plants, trees, and ceiling sprites are not. |
+| Lighting, fog, parallax, and final compositing | Not implemented; the existing map presentation remains underneath reconstructed terrain. |
+
+The renderer currently owns configured Wang-backed routes. Procedural bitmap
+caves, bitmap noise, gradients, and special routes for which the Dynamic Map
+generation output is insufficient remain screenshot-backed fallback. Prominent
+fallback areas include `solid_wall`, `desert`, `hills`, `winter`,
+`solid_wall_tower`, and `lake`.
+
+## Architecture
+
+The reconstruction is an additive, feature-gated backend:
+
+```text
+Dynamic Map seed generation and retained tile layers
+  -> deterministic terrain asset package
+  -> biome/material and Wang resolvers
+  -> vegetation and PixelScene material passes
+  -> EdgeGraphics passes
+  -> transparent OpenSeadragon terrain tiles
+  -> existing Dynamic Map viewer and screenshot underlay
+```
+
+Most implementation code lives under [`src/terrain/`](src/terrain/). The changes
+to established Dynamic Map files are limited to backend activation, retained
+terrain-layer publication, PixelScene ownership, caching, and OSD layer
+attachment.
+
+`noita-engine` was used as a read-only reverse-engineering and evidence reference.
+It is not included, imported, built, or required at runtime.
+
+## Terrain assets and validation
+
+The minimized runtime terrain bundle is [`public/terrain-assets.zip`](public/terrain-assets.zip).
+Its declared contents are recorded in
+[`terrain/manifests/whole-map-terrain-assets.json`](terrain/manifests/whole-map-terrain-assets.json)
+and validated against a generated SHA-256 identity. The current archive contains
+276 declared entries and no undeclared entries.
+
+```powershell
+npm run terrain:test
+npm run terrain:validate-assets
+npm run build
+```
+
+The focused terrain suite and production build pass. A repository-wide typecheck
+still encounters the upstream optional
+`noitamap-pro` sibling import when that separate repository is absent.
+
+The asset package contains a minimized selection of Noita-authored data required
+by the renderer. Noita and its authored content belong to Nolla Games; asset
+redistribution requirements should be reviewed before treating this research
+branch as a production distribution.
+
+## Upstream NoitaMap documentation
+
+Everything below is the original NoitaMap README and remains applicable to the
+underlying viewer and screenshot-map project.
+
 # <a href="https://noitamap.com" target="_blank"><img src="https://github.com/acidflow-noita/noitamap/blob/main/public/assets/NoitamapLogo.svg" alt="Noitamap Logo" style="width: 41px; height: 49px" /> NoitaMap.com</a>
 
 _Ultrafast_ Superzoom Map for Noita

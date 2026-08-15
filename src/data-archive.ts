@@ -19,6 +19,7 @@ const ZIP_URLS: Record<string, string> = {
   main: BASE_URL + "data.zip",
   pixel_scenes: BASE_URL + "pixel_scenes.zip",
   wang_tiles: BASE_URL + "wang_tiles.zip",
+  terrain: BASE_URL + "terrain-assets.zip",
 };
 
 const zipPromises: Record<string, Promise<JSZip | null> | null> = {};
